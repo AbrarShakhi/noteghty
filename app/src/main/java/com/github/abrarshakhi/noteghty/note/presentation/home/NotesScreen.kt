@@ -49,17 +49,17 @@ fun NotesScreen(
     viewModel: NotesViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackbarHostState) },
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
                     navController.navigate(Screen.AddEditNoteScreen.route)
                 },
-                containerColor = MaterialTheme.colorScheme.primary
+                containerColor = MaterialTheme.colorScheme.primary,
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
@@ -131,7 +131,7 @@ fun NotesScreen(
                         onDeleteClick = {
                             viewModel.onEvent(NotesEvent.DeleteNote(note))
                             scope.launch {
-                                val result = snackbarHostState.showSnackbar(
+                                val result = snackBarHostState.showSnackbar(
                                     message = "Note deleted",
                                     actionLabel = "Undo"
                                 )
