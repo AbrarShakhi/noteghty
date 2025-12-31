@@ -1,8 +1,12 @@
 package com.github.abrarshakhi.noteghty.note.domain.model
 
-import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.github.abrarshakhi.noteghty.ui.theme.BabyBlue
+import com.github.abrarshakhi.noteghty.ui.theme.LightGreen
+import com.github.abrarshakhi.noteghty.ui.theme.RedOrange
+import com.github.abrarshakhi.noteghty.ui.theme.RedPink
+import com.github.abrarshakhi.noteghty.ui.theme.Violet
 
 
 @Entity
@@ -14,7 +18,7 @@ data class Note(
     @PrimaryKey val id: Int? = null
 ) {
     companion object {
-        val noteColors = emptyList<Color>()
+        val noteColors = listOf(RedOrange, RedPink, BabyBlue, Violet, LightGreen)
     }
 }
 

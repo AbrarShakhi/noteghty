@@ -39,15 +39,11 @@ class MainActivity : ComponentActivity() {
                             route = Screen.AddEditNoteScreen.route +
                                     "?noteId={noteId}&noteColor={noteColor}",
                             arguments = listOf(
-                                navArgument(
-                                    name = "noteId"
-                                ) {
+                                navArgument(name = "noteId") {
                                     type = NavType.IntType
                                     defaultValue = -1
                                 },
-                                navArgument(
-                                    name = "noteColor"
-                                ) {
+                                navArgument(name = "noteColor") {
                                     type = NavType.IntType
                                     defaultValue = -1
                                 },
