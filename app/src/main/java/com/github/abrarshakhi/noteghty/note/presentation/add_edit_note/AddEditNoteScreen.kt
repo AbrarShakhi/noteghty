@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material3.FloatingActionButton
@@ -79,10 +81,9 @@ fun AddEditNoteScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(AddEditNoteEvent.SaveNote)
-                },
-                containerColor = MaterialTheme.colorScheme.primary
+                onClick = { viewModel.onEvent(AddEditNoteEvent.SaveNote) },
+                containerColor = MaterialTheme.colorScheme.primary,
+                shape = CircleShape
             ) {
                 Icon(
                     imageVector = Icons.Default.Save,
@@ -126,9 +127,7 @@ fun AddEditNoteScreen(
                                         animationSpec = tween(500)
                                     )
                                 }
-                                viewModel.onEvent(
-                                    AddEditNoteEvent.ChangeColor(colorInt)
-                                )
+                                viewModel.onEvent(AddEditNoteEvent.ChangeColor(colorInt))
                             }
                     )
                 }
