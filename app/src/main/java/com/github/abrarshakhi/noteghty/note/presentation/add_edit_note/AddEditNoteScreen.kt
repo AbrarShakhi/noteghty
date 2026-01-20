@@ -1,5 +1,6 @@
 package com.github.abrarshakhi.noteghty.note.presentation.add_edit_note
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -62,6 +63,10 @@ fun AddEditNoteScreen(
     }
 
     val scope = rememberCoroutineScope()
+
+    BackHandler {
+        viewModel.onEvent(AddEditNoteEvent.SaveNoteOrPass)
+    }
 
     LaunchedEffect(true) {
         viewModel.eventFlow.collectLatest { event ->

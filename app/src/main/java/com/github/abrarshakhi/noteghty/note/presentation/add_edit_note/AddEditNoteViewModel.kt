@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.github.abrarshakhi.noteghty.note.domain.model.InvalidNoteException
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteUseCases
+import com.github.abrarshakhi.noteghty.note.presentation.add_edit_note.AddEditNoteViewModel.UiEvent.SaveNote
+import com.github.abrarshakhi.noteghty.note.presentation.add_edit_note.AddEditNoteViewModel.UiEvent.ShowSnackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -99,26 +101,41 @@ class AddEditNoteViewModel @Inject constructor(
             is AddEditNoteEvent.SaveNote -> {
                 viewModelScope.launch {
                     try {
-                        noteUseCases.addNote(
-                            Note(
-                                title = noteTitle.value.text,
-                                content = noteContent.value.text,
-                                timestamp = System.currentTimeMillis(),
-                                color = noteColor.value,
-                                id = currentNoteId
-                            )
-                        )
-                        _eventFlow.emit(UiEvent.SaveNote)
+                        saveNoteOrThrow()
                     } catch (e: InvalidNoteException) {
                         _eventFlow.emit(
-                            UiEvent.ShowSnackbar(
+                            ShowSnackbar(
                                 message = e.message ?: "Couldn't save note"
                             )
                         )
                     }
                 }
             }
+
+            AddEditNoteEvent.SaveNoteOrPass -> {
+                viewModelScope.launch {
+                    try {
+                        saveNoteOrThrow()
+                    } catch (_: InvalidNoteException) {
+                    } finally {
+                        _eventFlow.emit(SaveNote)
+                    }
+                }
+            }
         }
+    }
+
+    private suspend fun saveNoteOrThrow() {
+        noteUseCases.addNote(
+            Note(
+                title = noteTitle.value.text,
+                content = noteContent.value.text,
+                timestamp = System.currentTimeMillis(),
+                color = noteColor.value,
+                id = currentNoteId
+            )
+        )
+        _eventFlow.emit(SaveNote)
     }
 
     sealed class UiEvent {
