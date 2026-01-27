@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.ui.theme
+package com.github.abrarshakhi.noteghty.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

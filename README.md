@@ -93,4 +93,4 @@ See the [LICENSE](LICENCE) file for details.
 
 ## Credits
 
-<a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by Pixel perfect - Flaticon</a>
+* <a href="https://www.flaticon.com/free-icons/paper" title="paper icons">Paper icons created by Pixel perfect - Flaticon</a>

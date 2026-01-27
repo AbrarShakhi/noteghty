@@ -2,11 +2,11 @@ package com.github.abrarshakhi.noteghty.note.domain.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.github.abrarshakhi.noteghty.ui.theme.LavenderBlue
-import com.github.abrarshakhi.noteghty.ui.theme.LightApricot
-import com.github.abrarshakhi.noteghty.ui.theme.LightBlushPink
-import com.github.abrarshakhi.noteghty.ui.theme.MutedCoralRose
-import com.github.abrarshakhi.noteghty.ui.theme.WarmCream
+import com.github.abrarshakhi.noteghty.core.ui.theme.Black
+import com.github.abrarshakhi.noteghty.core.ui.theme.Yellow
+import com.github.abrarshakhi.noteghty.core.ui.theme.Red
+import com.github.abrarshakhi.noteghty.core.ui.theme.MutedCoralRose
+import com.github.abrarshakhi.noteghty.core.ui.theme.Orange
 
 
 @Entity
@@ -19,7 +19,7 @@ data class Note(
 ) {
     companion object {
         val noteColors =
-            listOf(WarmCream, LightBlushPink, LavenderBlue, LightApricot, MutedCoralRose)
+            listOf(Orange, Red, Black, Yellow, MutedCoralRose)
     }
 }
 

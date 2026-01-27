@@ -14,7 +14,7 @@ import androidx.navigation.navArgument
 import com.github.abrarshakhi.noteghty.note.presentation.add_edit_note.AddEditNoteScreen
 import com.github.abrarshakhi.noteghty.note.presentation.home.NotesScreen
 import com.github.abrarshakhi.noteghty.note.presentation.utils.Screen
-import com.github.abrarshakhi.noteghty.ui.theme.NoteghtyTheme
+import com.github.abrarshakhi.noteghty.core.ui.theme.NoteghtyTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

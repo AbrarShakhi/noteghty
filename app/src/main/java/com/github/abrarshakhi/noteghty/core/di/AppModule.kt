@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.di
+package com.github.abrarshakhi.noteghty.core.di
 
 import android.app.Application
 import androidx.room.Room
