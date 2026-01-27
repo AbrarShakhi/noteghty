@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.core.ui.theme
+package com.github.abrarshakhi.noteghty.core
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
