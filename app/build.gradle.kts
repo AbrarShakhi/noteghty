@@ -74,6 +74,5 @@ dependencies {
     implementation(libs.androidx.compose.material.icons.extended)
     implementation(libs.hilt.navigation.compose)
 
-//    implementation("com.colintheshots:twain:0.3.2")
     implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc13")
 }

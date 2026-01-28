@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NoteHomeViewModel @Inject constructor(): ViewModel() {
+class NoteHomeViewModel @Inject constructor() : ViewModel() {
     private val _notesState = MutableStateFlow<NotesListState>(NotesListState.loading(emptyList()))
     val notesState = _notesState.asStateFlow()
 
@@ -20,11 +20,56 @@ class NoteHomeViewModel @Inject constructor(): ViewModel() {
     }
 
     private fun loadNotes() {
+        _notesState.update { it.asLoading() }
         viewModelScope.launch {
-            val notes = (1..100).map {
-                Note(it, it.toString())
-            }
+            val notes = listOf(
+                Note.create(
+                    title = "Welcome to NoteGhty",
+                    content = "This is your first note. You can edit, pin, or delete it.",
+                    color = 0xFFFFF59D,
+                    isPinned = true
+                ),
+                Note.create(
+                    title = "Daily Tasks",
+                    content = "• Finish UI\n• Review PR\n• Push release build",
+                    color = 0xFFBBDEFB
+                ),
+                Note.create(
+                    title = "Design Ideas",
+                    content = "Explore Material You, dynamic colors, and animations.",
+                    color = 0xFFC8E6C9
+                ),
+                Note.create(
+                    title = "Workout Plan",
+                    content = "Mon: Chest\nTue: Back\nWed: Legs\nThu: Shoulders",
+                    color = 0xFFFFCDD2
+                )
+                , Note.create(
+                    title = "Workout Plan",
+                    content = "Mon: Chest\nTue: Back\nWed: Legs\nThu: Shoulders",
+                    color = 0xFFFFCDD2
+                ), Note.create(
+                    title = "Workout Plan",
+                    content = "Mon: Chest\nTue: Back\nWed: Legs\nThu: Shouldersjfri fgghirgharuig rghrughrug harjgharjghrujghrjagharujhgjrhgurgarjg\nueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg ueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg ueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg ueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg ueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg ueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg ueghfuuefn ug eifgehji efhgEHFGEH FEHGharioughruoghruahg",
+                    color = 0xFFFFCDD2
+                ), Note.create(
+                    title = "Workout Plan",
+                    content = "Mon: Chest\nTue: Back\nWed: Legs\nThu: Shoulders",
+                    color = 0xFFFFCDD2
+                )
+            )
             _notesState.update { it.asSuccess(notes) }
+        }
+    }
+
+
+    private val _viewStyle = MutableStateFlow(ViewStyleState.AGENDA)
+    val viewStyle = _viewStyle.asStateFlow()
+    fun toggleViewStyle() {
+        // TODO: Later save this in a preference
+        when (_viewStyle.value) {
+            ViewStyleState.AGENDA -> _viewStyle.update { ViewStyleState.COZY }
+            ViewStyleState.COZY -> _viewStyle.update { ViewStyleState.AGENDA }
         }
     }
 }

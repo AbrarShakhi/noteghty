@@ -7,7 +7,7 @@ import javax.inject.Inject
 @HiltViewModel
 class NoteEditViewModel  @Inject constructor(): ViewModel() {
 
-    fun tryToSaveHtml(html: String) {
+    fun tryToSave(html: String) {
 
     }
 }
