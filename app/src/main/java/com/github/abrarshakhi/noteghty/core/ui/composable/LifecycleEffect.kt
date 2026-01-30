@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.core.ui.composiable
+package com.github.abrarshakhi.noteghty.core.ui.composable
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect

@@ -26,14 +26,14 @@ fun NavGraphBuilder.noteNavGraph(navController: NavHostController) {
                 type = NavType.IntType
                 defaultValue = -1
             }, navArgument(name = "noteColor") {
-                type = NavType.IntType
+                type = NavType.LongType
                 defaultValue = -1
             })
         ) {
-             val noteId = it.arguments?.getInt("noteId") ?: -1
-             val noteColor = it.arguments?.getInt("noteColor") ?: -1
+            val noteId = it.arguments?.getInt("noteId") ?: -1
+            val noteColor = it.arguments?.getLong("noteColor") ?: -1
             val viewModel: NoteEditViewModel = hiltViewModel()
-            NoteEditScreen(navController, viewModel)
+            NoteEditScreen(navController, viewModel, noteId, noteColor)
         }
     }
 }

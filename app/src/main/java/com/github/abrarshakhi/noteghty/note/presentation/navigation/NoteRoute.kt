@@ -8,7 +8,7 @@ sealed class NoteRoute(pattern: String) : AppRoute(pattern) {
 
     object Home : NoteRoute("note_home")
 
-    data class Edit(val noteId: Int, val noteColor: Int) : NoteRoute(
+    data class Edit(val noteId: Int, val noteColor: Long) : NoteRoute(
         "note_edit?noteId={noteId}&noteColor={noteColor}"
     ) {
         override fun route(): String =

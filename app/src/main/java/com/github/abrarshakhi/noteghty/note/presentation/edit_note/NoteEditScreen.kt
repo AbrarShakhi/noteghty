@@ -14,14 +14,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.github.abrarshakhi.noteghty.R
-import com.github.abrarshakhi.noteghty.core.ui.composiable.LifecycleEventsEffect
+import com.github.abrarshakhi.noteghty.core.ui.composable.LifecycleEventsEffect
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel) {
+fun NoteEditScreen(
+    navController: NavController,
+    viewModel: NoteEditViewModel,
+    noteId: Int,
+    noteColor: Long
+) {
 
     val state = rememberRichTextState()
 

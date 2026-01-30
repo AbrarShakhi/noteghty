@@ -5,7 +5,6 @@ import java.time.Instant
 data class Note(
     val id: Int = -1,
 
-    val title: String,
     val content: String,
 
     val color: Long,
@@ -20,14 +19,12 @@ data class Note(
      * Returns a new Note instance with updated content and timestamp.
      */
     fun update(
-        title: String = this.title,
         content: String = this.content,
         color: Long = this.color,
         isPinned: Boolean = this.isPinned,
         isDeleted: Boolean = this.isDeleted,
     ): Note {
         return copy(
-            title = title,
             content = content,
             color = color,
             isPinned = isPinned,
@@ -43,13 +40,11 @@ data class Note(
          * Keeps construction explicit and readable.
          */
         fun create(
-            title: String,
             content: String,
             color: Long,
             isPinned: Boolean = false
         ): Note {
             return Note(
-                title = title,
                 content = content,
                 color = color,
                 isPinned = isPinned,
