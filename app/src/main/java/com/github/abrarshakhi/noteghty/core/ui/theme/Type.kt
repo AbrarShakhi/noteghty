@@ -8,18 +8,10 @@ import androidx.compose.ui.unit.sp
 
 val NoteghtyTypography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 16.sp
-    ),
-    headlineMedium = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Bold,
-        fontSize = 28.sp
-    ),
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 20.sp
+        fontFamily = FontFamily.Default, fontWeight = FontWeight.Normal, fontSize = 16.sp
+    ), headlineMedium = TextStyle(
+        fontFamily = FontFamily.Default, fontWeight = FontWeight.Bold, fontSize = 28.sp
+    ), titleLarge = TextStyle(
+        fontFamily = FontFamily.Default, fontWeight = FontWeight.SemiBold, fontSize = 20.sp
     )
 )

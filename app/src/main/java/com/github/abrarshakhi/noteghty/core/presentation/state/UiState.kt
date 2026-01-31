@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.core.ui.state
+package com.github.abrarshakhi.noteghty.core.presentation.state
 
 data class UiState<T>(val content: UiContent<T>, val isLoading: Boolean = false) {
     fun asLoading() = copy(isLoading = true)
@@ -12,18 +12,15 @@ data class UiState<T>(val content: UiContent<T>, val isLoading: Boolean = false)
 
     companion object {
         fun <T> loading(data: T) = UiState(
-            content = UiContent.Data(data),
-            isLoading = true
+            content = UiContent.Data(data), isLoading = true
         )
 
         fun <T> success(data: T) = UiState(
-            content = UiContent.Data(data),
-            isLoading = false
+            content = UiContent.Data(data), isLoading = false
         )
 
         fun <T> error(message: String): UiState<T> = UiState(
-            content = UiContent.Error(message),
-            isLoading = false
+            content = UiContent.Error(message), isLoading = false
         )
     }
 }

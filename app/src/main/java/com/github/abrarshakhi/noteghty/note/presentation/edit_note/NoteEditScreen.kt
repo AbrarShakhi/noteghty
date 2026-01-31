@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.github.abrarshakhi.noteghty.R
-import com.github.abrarshakhi.noteghty.core.ui.composable.LifecycleEventsEffect
+import com.github.abrarshakhi.noteghty.core.presentation.composable.LifecycleEventsEffect
 import com.mohamedrejeb.richeditor.model.rememberRichTextState
 import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 
@@ -22,10 +22,7 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NoteEditScreen(
-    navController: NavController,
-    viewModel: NoteEditViewModel,
-    noteId: Int,
-    noteColor: Long
+    navController: NavController, viewModel: NoteEditViewModel, noteId: Int, noteColor: ULong
 ) {
 
     val state = rememberRichTextState()
@@ -41,25 +38,20 @@ fun NoteEditScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Edit Note") },
-                navigationIcon = {
-                    IconButton(onClick = {
-                        viewModel.tryToSave(state.toHtml())
-                        navController.popBackStack()
-                    }) {
-                        Icon(
-                            painter = painterResource(R.drawable.outline_arrow_back_24),
-                            contentDescription = "Back"
-                        )
-                    }
+            TopAppBar(title = { Text("Edit Note") }, navigationIcon = {
+                IconButton(onClick = {
+                    viewModel.tryToSave(state.toHtml())
+                    navController.popBackStack()
+                }) {
+                    Icon(
+                        painter = painterResource(R.drawable.outline_arrow_back_24),
+                        contentDescription = "Back"
+                    )
                 }
-            )
-        }
-    ) { padding ->
+            })
+        }) { padding ->
         RichTextEditor(
-            state = state,
-            modifier = Modifier.padding(padding).fillMaxSize()
+            state = state, modifier = Modifier.padding(padding).fillMaxSize()
         )
     }
 }

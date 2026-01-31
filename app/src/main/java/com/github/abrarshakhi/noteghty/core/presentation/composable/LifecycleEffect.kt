@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.core.ui.composable
+package com.github.abrarshakhi.noteghty.core.presentation.composable
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -11,8 +11,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 
 @Composable
 fun LifecycleOnEventEffect(
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-    onEvent: (Lifecycle.Event) -> Unit
+    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current, onEvent: (Lifecycle.Event) -> Unit
 ) {
     val eventHandler by rememberUpdatedState(onEvent)
 

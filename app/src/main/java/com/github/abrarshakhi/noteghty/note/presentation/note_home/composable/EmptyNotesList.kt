@@ -13,17 +13,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
-import com.github.abrarshakhi.noteghty.core.ui.theme.MonokaiComments
 
 @Composable
 fun EmptyNotesList(padding: PaddingValues, onSave: () -> Unit) {
     Box(modifier = Modifier.padding(padding).fillMaxSize(), contentAlignment = Alignment.Center) {
         IconButton(onClick = onSave, modifier = Modifier.size(300.dp).fillMaxSize()) {
             Icon(
-                painter = painterResource(R.drawable.outline_note_add_24),
+                painter = painterResource(R.drawable.outline_history_edu_24),
                 modifier = Modifier.padding(50.dp).fillMaxSize(),
                 contentDescription = "add new note",
-                tint = MonokaiComments
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.core.utils
+package com.github.abrarshakhi.noteghty.core.domain.utils
 
 sealed interface Outcome<out T, out E> {
     data class Ok<T>(val data: T) : Outcome<T, Nothing>

@@ -1,5 +1,6 @@
 package com.github.abrarshakhi.noteghty.note.domain.model
 
+import androidx.compose.ui.graphics.Color
 import java.time.Instant
 
 data class Note(
@@ -7,7 +8,7 @@ data class Note(
 
     val content: String,
 
-    val color: Long,
+    val color: Color,
     val isPinned: Boolean = false,
     val isDeleted: Boolean = false,
 
@@ -20,7 +21,7 @@ data class Note(
      */
     fun update(
         content: String = this.content,
-        color: Long = this.color,
+        color: Color = this.color,
         isPinned: Boolean = this.isPinned,
         isDeleted: Boolean = this.isDeleted,
     ): Note {
@@ -40,9 +41,7 @@ data class Note(
          * Keeps construction explicit and readable.
          */
         fun create(
-            content: String,
-            color: Long,
-            isPinned: Boolean = false
+            content: String, color: Color, isPinned: Boolean = false
         ): Note {
             return Note(
                 content = content,

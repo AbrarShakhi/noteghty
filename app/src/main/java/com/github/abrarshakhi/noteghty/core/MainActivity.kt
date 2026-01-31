@@ -14,10 +14,9 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            NoteghtyTheme {
-                val navController = rememberNavController()
-                AppNavGraph(navController)
-            }
+            NoteghtyTheme(
+                dynamicColor = false
+            ) { AppNavGraph(navController = rememberNavController()) }
         }
     }
 }
