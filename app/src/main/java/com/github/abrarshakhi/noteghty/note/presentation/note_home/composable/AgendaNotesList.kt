@@ -21,7 +21,7 @@ fun AgendaNotesList(
         modifier = modifier, contentPadding = contentPadding, verticalArrangement = arrangement
     ) {
         items(
-            items = notes, key = { it.id.takeIf { id -> id != -1 } ?: it.hashCode() }) {
+            items = notes, key = { it.hashCode() }) {
             noteItem(it)
         }
     }

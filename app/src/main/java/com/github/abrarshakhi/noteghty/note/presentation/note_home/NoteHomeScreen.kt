@@ -41,7 +41,7 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
     val viewStyle by viewModel.viewStyle.collectAsStateWithLifecycle()
 
     val onSave = {
-        navController.navigate(NoteRoute.Edit(null).route())
+        navController.navigate(NoteRoute.Edit(-1).route())
     }
 
 
@@ -51,12 +51,9 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
                 Image(
                     painter = painterResource(id = R.drawable.noteghty),
                     contentDescription = "App Logo",
-                    modifier = Modifier
-                        .width(36.dp)
-                        .background(
+                    modifier = Modifier.width(36.dp).background(
                             color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
-                        )
-                        .padding(5.dp)
+                        ).padding(5.dp)
                 )
             }
         }, actions = {
@@ -95,9 +92,7 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
 
         if (notesListState.isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
+                modifier = Modifier.padding(padding).fillMaxWidth()
             )
         }
 
@@ -109,7 +104,7 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
                 } else {
                     NotesList(viewStyle, notes, padding) { note ->
                         NoteItem(note = note, onClick = {
-                            navController.navigate(NoteRoute.Edit(note.id).route())
+                            navController.navigate(NoteRoute.Edit(note.id ?: -1).route())
                         })
                     }
                 }

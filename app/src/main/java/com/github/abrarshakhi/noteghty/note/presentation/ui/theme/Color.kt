@@ -23,4 +23,19 @@ val lightGreen = Color(0xFFC8E6C9)
 val limePastel = Color(0xFFDCEDC8)
 val paleYellow = Color(0xFFFFF9C4)
 
+// Primary / Accent colors
+val forestGreen = Color(0xFF2E7D32)
+val oliveGreen = Color(0xFF6B8E23)
+val warmBrown = Color(0xFF6D4C41)
+val softRed = Color(0xFFD32F2F)
+val dustyPink = Color(0xFFC2185B)
+val purpleAccent = Color(0xFF7B1FA2)
+val indigoAccent = Color(0xFF303F9F)
+val tealAccent = Color(0xFF00796B)
+val skyBlue = Color(0xFF0288D1)
+val amberAccent = Color(0xFFFFA000)
 
+// Extra foregrounds
+val darkText = Color(0xFF1C1C1C)
+val mutedText = Color(0xFF4E4E4E)
+val whiteText = Color(0xFFFFFFFF)

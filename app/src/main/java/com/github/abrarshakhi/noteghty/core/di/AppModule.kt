@@ -2,6 +2,8 @@ package com.github.abrarshakhi.noteghty.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.github.abrarshakhi.noteghty.note.data.repository.NoteRepositoryImpl
+import com.github.abrarshakhi.noteghty.note.domain.repository.NoteRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,4 +26,15 @@ object AppModule {
             "note_prefs", Context.MODE_PRIVATE
         )
     }
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object RepositoryModule {
+        @Provides
+        @Singleton
+        fun provideNoteRepository() : NoteRepository {
+            return NoteRepositoryImpl()
+        }
+    }
+
 }

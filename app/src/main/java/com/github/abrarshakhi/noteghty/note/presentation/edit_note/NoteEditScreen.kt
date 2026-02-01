@@ -1,11 +1,15 @@
 package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -25,10 +29,11 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel, noteId: Int?) {
+fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel, noteId: Int) {
 
     val activeNote by viewModel.activeNote.collectAsStateWithLifecycle()
     val contentEditorState = rememberRichTextState()
+    val titleEditorState = rememberRichTextState()
 
     LaunchedEffect(activeNote.content) {
         if (contentEditorState.toMarkdown() != activeNote.content) {
@@ -37,17 +42,25 @@ fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel, n
     }
 
     LaunchedEffect(noteId) {
-        noteId?.let { viewModel.loadNote(it) }
+        if (noteId != -1) {
+            viewModel.loadNote(noteId)
+        }
     }
 
     BackHandler {
         viewModel.tryToSave()
-        navController.popBackStack()
+        navController.navigateUp()
     }
 
     LifecycleEventsEffect(onPause = {
         viewModel.tryToSave()
     })
+
+    LaunchedEffect(contentEditorState) {
+        snapshotFlow { contentEditorState.toMarkdown() }.collect { markdown ->
+            viewModel.onContentChange(markdown)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -63,17 +76,17 @@ fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel, n
                 }
             })
         }) { padding ->
-        LaunchedEffect(contentEditorState) {
-            snapshotFlow { contentEditorState.toMarkdown() }.collect { markdown ->
-                viewModel.onContentChange(markdown)
-            }
+        Column(modifier = Modifier.padding(padding).fillMaxSize().imePadding()) {
+            RichTextEditor(
+                state = titleEditorState,
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = MaterialTheme.typography.titleLarge,
+            )
+            RichTextEditor(
+                state = contentEditorState,
+                modifier = Modifier.fillMaxSize(),
+            )
         }
-        RichTextEditor(
-            state = contentEditorState,
-            modifier = Modifier
-                .padding(padding)
-                .fillMaxSize(),
-        )
     }
 }
 

@@ -21,13 +21,12 @@ fun NavGraphBuilder.noteNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = NoteRoute.Edit(null).pattern,
-            arguments = listOf(navArgument(name = "noteId") {
+            route = NoteRoute.Edit(-1).pattern, arguments = listOf(navArgument(name = "noteId") {
                 type = NavType.IntType
-                defaultValue = null
+                defaultValue = -1
             })
         ) {
-            val noteId = it.arguments?.getInt("noteId")
+            val noteId = it.arguments?.getInt("noteId") ?: -1
             val viewModel: NoteEditViewModel = hiltViewModel()
             NoteEditScreen(navController, viewModel, noteId)
         }
