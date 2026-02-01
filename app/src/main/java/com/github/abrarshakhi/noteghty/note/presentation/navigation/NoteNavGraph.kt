@@ -21,19 +21,15 @@ fun NavGraphBuilder.noteNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = NoteRoute.Edit(-1, 0UL).pattern,
+            route = NoteRoute.Edit(null).pattern,
             arguments = listOf(navArgument(name = "noteId") {
                 type = NavType.IntType
-                defaultValue = -1
-            }, navArgument(name = "noteColor") {
-                type = NavType.LongType
-                defaultValue = -1
+                defaultValue = null
             })
         ) {
-            val noteId = it.arguments?.getInt("noteId") ?: -1
-            val noteColor = it.arguments?.getLong("noteColor") ?: 0
+            val noteId = it.arguments?.getInt("noteId")
             val viewModel: NoteEditViewModel = hiltViewModel()
-            NoteEditScreen(navController, viewModel, noteId, noteColor.toULong())
+            NoteEditScreen(navController, viewModel, noteId)
         }
     }
 }

@@ -21,25 +21,30 @@ import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
 import com.github.abrarshakhi.noteghty.core.domain.utils.toDayMonth
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
-import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 
 @Composable
-fun NoteItem(
-    note: Note, modifier: Modifier = Modifier, onClick: () -> Unit
-) {
+fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: () -> Unit) {
     Card(
-        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
-            containerColor = note.color
+            containerColor = note.color.background
         )
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Text(
+                text = note.title,
+                style = MaterialTheme.typography.titleMedium,
+                color = note.color.foreground,
+            )
+            Spacer(modifier.padding(top = 4.dp))
+            Text(
                 text = note.content,
                 style = MaterialTheme.typography.bodyMedium,
-                color = NoteColor.textFg(),
+                color = note.color.foreground,
                 maxLines = 8
             )
             if (note.isPinned) {
@@ -52,12 +57,12 @@ fun NoteItem(
                     Icon(
                         painter = painterResource(R.drawable.outline_import_contacts_24),
                         contentDescription = "pinned",
-                        tint = NoteColor.textFg2()
+                        tint = note.color.foreground
                     )
                     Text(
                         text = note.updatedAt.toDayMonth(),
                         style = MaterialTheme.typography.bodySmall,
-                        color = NoteColor.textFg2(),
+                        color = note.color.foreground,
                         maxLines = 1
                     )
                 }

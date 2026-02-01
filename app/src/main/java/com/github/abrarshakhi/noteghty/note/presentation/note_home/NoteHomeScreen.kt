@@ -27,7 +27,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.github.abrarshakhi.noteghty.R
 import com.github.abrarshakhi.noteghty.core.presentation.state.UiState
-import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteViewStyle
 import com.github.abrarshakhi.noteghty.note.presentation.navigation.NoteRoute
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.EmptyNotesList
@@ -42,9 +41,7 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
     val viewStyle by viewModel.viewStyle.collectAsStateWithLifecycle()
 
     val onSave = {
-        navController.navigate(
-            NoteRoute.Edit(-1, NoteColor.anyBg().value).route()
-        )
+        navController.navigate(NoteRoute.Edit(null).route())
     }
 
 
@@ -54,9 +51,12 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
                 Image(
                     painter = painterResource(id = R.drawable.noteghty),
                     contentDescription = "App Logo",
-                    modifier = Modifier.width(36.dp).background(
-                        color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
-                    ).padding(5.dp)
+                    modifier = Modifier
+                        .width(36.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
+                        )
+                        .padding(5.dp)
                 )
             }
         }, actions = {
@@ -94,7 +94,11 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
     }) { padding ->
 
         if (notesListState.isLoading) {
-            LinearProgressIndicator(modifier = Modifier.padding(padding).fillMaxWidth())
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
+            )
         }
 
         when (val state = notesListState.content) {
@@ -105,9 +109,7 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
                 } else {
                     NotesList(viewStyle, notes, padding) { note ->
                         NoteItem(note = note, onClick = {
-                            navController.navigate(
-                                NoteRoute.Edit(note.id, note.color.value).route()
-                            )
+                            navController.navigate(NoteRoute.Edit(note.id).route())
                         })
                     }
                 }
