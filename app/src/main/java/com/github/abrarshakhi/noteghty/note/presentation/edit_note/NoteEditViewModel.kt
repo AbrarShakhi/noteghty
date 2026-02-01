@@ -24,11 +24,24 @@ class NoteEditViewModel @Inject constructor() : ViewModel() {
     )
     val activeNote = _activeNote.asStateFlow()
 
-    fun getNote(noteId: Int) {
-        _activeNote.update { it.update(title = "Loaded From db") }
+    fun loadNote(noteId: Int) {
+        // Imagine it fetches from DB with a key
+        _activeNote.update {
+            Note.create(
+                title = "", content = "", color = NoteColor(
+                    primary = paleYellow, background = offWhite, foreground = greyGreenText
+                )
+            )
+        }
+    }
+
+    fun onContentChange(newContent: String) {
+        _activeNote.update { it.update(content = newContent) }
     }
 
     fun tryToSave() {
+        // imagine try to save to DB
+        // saveNoteUseCase(_activeNote.value)
     }
 
 

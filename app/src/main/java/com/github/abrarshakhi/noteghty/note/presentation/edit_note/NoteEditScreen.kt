@@ -12,6 +12,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -26,15 +27,18 @@ import com.mohamedrejeb.richeditor.ui.material3.RichTextEditor
 @Composable
 fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel, noteId: Int?) {
 
-    LaunchedEffect(noteId) {
-        if (noteId != null) {
-            viewModel.getNote(noteId)
+    val activeNote by viewModel.activeNote.collectAsStateWithLifecycle()
+    val contentEditorState = rememberRichTextState()
+
+    LaunchedEffect(activeNote.content) {
+        if (contentEditorState.toMarkdown() != activeNote.content) {
+            contentEditorState.setMarkdown(activeNote.content)
         }
     }
 
-    val activeNote by viewModel.activeNote.collectAsStateWithLifecycle()
-    val richTextState = rememberRichTextState()
-    richTextState.setText(activeNote.content)
+    LaunchedEffect(noteId) {
+        noteId?.let { viewModel.loadNote(it) }
+    }
 
     BackHandler {
         viewModel.tryToSave()
@@ -59,9 +63,16 @@ fun NoteEditScreen(navController: NavController, viewModel: NoteEditViewModel, n
                 }
             })
         }) { padding ->
+        LaunchedEffect(contentEditorState) {
+            snapshotFlow { contentEditorState.toMarkdown() }.collect { markdown ->
+                viewModel.onContentChange(markdown)
+            }
+        }
         RichTextEditor(
-            state = richTextState,
-            modifier = Modifier.padding(padding).fillMaxSize(),
+            state = contentEditorState,
+            modifier = Modifier
+                .padding(padding)
+                .fillMaxSize(),
         )
     }
 }

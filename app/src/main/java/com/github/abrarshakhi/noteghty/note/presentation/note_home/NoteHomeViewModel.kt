@@ -3,8 +3,10 @@ package com.github.abrarshakhi.noteghty.note.presentation.note_home
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.abrarshakhi.noteghty.core.presentation.state.UiState
 import com.github.abrarshakhi.noteghty.note.data.local.preference.getNoteViewStyle
 import com.github.abrarshakhi.noteghty.note.data.local.preference.setNoteViewStyle
+import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteViewStyle
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +14,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
+typealias NotesListState = UiState<List<Note>>
 
 @HiltViewModel
 class NoteHomeViewModel @Inject constructor(
