@@ -5,4 +5,6 @@ import com.github.abrarshakhi.noteghty.core.domain.utils.Error
 
 sealed interface NoteError : Error {
     object NotFound : NoteError
+    object Unknown : NoteError
+    object InvalidNoteId : NoteError
 }

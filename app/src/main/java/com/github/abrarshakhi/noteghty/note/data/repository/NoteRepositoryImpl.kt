@@ -46,7 +46,7 @@ class NoteRepositoryImpl : NoteRepository {
 
                 Focus on finishing ONE project properly instead of starting many.
                 Done is better than perfect.
-            """.trimIndent(), color = NoteColor.random()
+            """.trimIndent(), color = NoteColor.random(), isPinned = true
         ),
 
         Note.create(

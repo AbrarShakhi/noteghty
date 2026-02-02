@@ -18,6 +18,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
@@ -30,7 +33,9 @@ import com.github.abrarshakhi.noteghty.core.presentation.state.UiState
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteViewStyle
 import com.github.abrarshakhi.noteghty.note.presentation.navigation.NoteRoute
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.EmptyNotesList
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.ErrorNotesList
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NoteItem
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NoteOrderBottomSheet
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NotesList
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -40,10 +45,12 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
     val notesListState by viewModel.notesState.collectAsStateWithLifecycle()
     val viewStyle by viewModel.viewStyle.collectAsStateWithLifecycle()
 
+    var showSortSheet by remember { mutableStateOf(false) }
+
+
     val onSave = {
         navController.navigate(NoteRoute.Edit(-1).route())
     }
-
 
     Scaffold(modifier = Modifier.shadow(100.dp), topBar = {
         TopAppBar(title = { Text(text = stringResource(R.string.app_name)) }, navigationIcon = {
@@ -52,15 +59,15 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
                     painter = painterResource(id = R.drawable.noteghty),
                     contentDescription = "App Logo",
                     modifier = Modifier.width(36.dp).background(
-                            color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
-                        ).padding(5.dp)
+                        color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
+                    ).padding(5.dp)
                 )
             }
         }, actions = {
-            IconButton(onClick = { }) {
+            IconButton(onClick = { showSortSheet = true }) {
                 Icon(
                     painter = painterResource(R.drawable.outline_swap_vert_24),
-                    contentDescription = "Sort"
+                    contentDescription = "Order"
                 )
             }
 
@@ -111,11 +118,20 @@ fun NoteHomeScreen(navController: NavController, viewModel: NoteHomeViewModel) {
             }
 
             is UiState.UiContent.Error -> {
-                val msg = state.message
-                Text(msg, modifier = Modifier.padding(padding))
-                // TODO: Fix this later.
+                ErrorNotesList(padding, state.message) { viewModel.loadNotes() }
             }
         }
+    }
+
+    if (showSortSheet) {
+        NoteOrderBottomSheet(
+            currentOrder = viewModel.noteOrderingSettings.collectAsStateWithLifecycle().value,
+            onDismiss = { showSortSheet = false },
+            onSave = { order ->
+                viewModel.setNoteOrderingSettings(order)
+                viewModel.loadNotes()
+                showSortSheet = false
+            })
     }
 }
 

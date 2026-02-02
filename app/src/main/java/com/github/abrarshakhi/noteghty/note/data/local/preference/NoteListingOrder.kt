@@ -55,6 +55,6 @@ fun SharedPreferences.getNoteListingOrder(): NoteOrder {
 fun SharedPreferences.setNoteListingOrder(order: NoteOrder) {
     edit() {
         putString(KEY_NOTE_ORDER_TYPE, NoteOrderType.toType(order).key)
-        putString(KEY_NOTE_ORDER_DIRECTION, order.listingDirection.name)
+        putString(KEY_NOTE_ORDER_DIRECTION, order.direction.name)
     }
 }
