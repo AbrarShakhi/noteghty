@@ -3,6 +3,7 @@ package com.github.abrarshakhi.noteghty.note.presentation.note_home
 import android.content.SharedPreferences
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.abrarshakhi.noteghty.core.domain.listings.ListingOrder
 import com.github.abrarshakhi.noteghty.core.presentation.state.UiState
 import com.github.abrarshakhi.noteghty.note.data.local.preference.getNoteViewStyle
 import com.github.abrarshakhi.noteghty.note.data.local.preference.setNoteViewStyle
@@ -38,7 +39,7 @@ class NoteHomeViewModel @Inject constructor(
 
     fun loadNotes() {
         viewModelScope.launch {
-            getNotesUseCase().onStart { _notesState.update { it.asLoading() } }
+            getNotesUseCase(GetNotesUseCase.NoteOrder.Date(ListingOrder.Ascending)).onStart { _notesState.update { it.asLoading() } }
                 .catch { e -> _notesState.update { it.asError(e.message ?: "Unknown Error") } }
                 .collect { notes -> _notesState.update { it.asSuccess(notes) } }
         }
