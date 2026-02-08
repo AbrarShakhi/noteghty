@@ -1,13 +1,17 @@
-import androidx.compose.runtime.Composable
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import com.github.abrarshakhi.noteghty.note.presentation.navigation.NoteRoute
-import com.github.abrarshakhi.noteghty.note.presentation.navigation.noteNavGraph
+package com.github.abrarshakhi.noteghty.core.presentation.navigation
 
+import androidx.navigation3.runtime.NavKey
+import kotlinx.serialization.Serializable
 
-@Composable
-fun AppNavGraph(navController: NavHostController) {
-    NavHost(navController = navController, startDestination = NoteRoute.Graph.pattern) {
-        noteNavGraph(navController)
+@Serializable
+sealed interface AppNavGraph : NavKey {
+
+    @Serializable
+    sealed interface NoteNavKey : AppNavGraph {
+
+        @Serializable
+        object Home : NoteNavKey
+        @Serializable
+        data class Editor(val noteId: Int) : NoteNavKey
     }
 }

@@ -15,9 +15,9 @@ import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
 
 @Composable
-fun EmptyNotesList(padding: PaddingValues, onSave: () -> Unit) {
+fun EmptyNotesList(padding: PaddingValues, onNewNote: () -> Unit) {
     Box(modifier = Modifier.padding(padding).fillMaxSize(), contentAlignment = Alignment.Center) {
-        IconButton(onClick = onSave, modifier = Modifier.size(300.dp).fillMaxSize()) {
+        IconButton(onClick = onNewNote, modifier = Modifier.size(300.dp).fillMaxSize()) {
             Icon(
                 painter = painterResource(R.drawable.outline_history_edu_24),
                 modifier = Modifier.padding(50.dp).fillMaxSize(),

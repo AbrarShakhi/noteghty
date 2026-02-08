@@ -1,6 +1,6 @@
 package com.github.abrarshakhi.noteghty.note.presentation.note_home.composable
 
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,9 +22,13 @@ import com.github.abrarshakhi.noteghty.core.domain.utils.toDayMonth
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 
 @Composable
-fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: () -> Unit) {
+fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Int) -> Unit) {
     Card(
-        modifier = modifier.fillMaxWidth().clickable(onClick = onClick),
+        modifier = modifier
+            .fillMaxWidth()
+            .combinedClickable(enabled = true, onClick = {
+                onClick(note.id ?: -1)
+            }, onLongClick = {}),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
