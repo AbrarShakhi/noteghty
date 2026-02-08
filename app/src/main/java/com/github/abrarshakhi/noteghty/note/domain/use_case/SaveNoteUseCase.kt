@@ -7,7 +7,7 @@ import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
 import javax.inject.Inject
 
 class SaveNoteUseCase @Inject constructor(private val repo: NoteRepository) {
-    operator fun invoke(note: Note): Outcome<Unit, NoteError> {
+    suspend operator fun invoke(note: Note): Outcome<Unit, NoteError> {
         // TODO: Make sure its not empty Note
         return repo.saveNote(note)
     }

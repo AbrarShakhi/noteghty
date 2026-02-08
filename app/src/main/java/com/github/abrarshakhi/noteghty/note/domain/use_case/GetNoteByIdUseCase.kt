@@ -7,7 +7,7 @@ import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
 import javax.inject.Inject
 
 class GetNoteByIdUseCase @Inject constructor(private val repo: NoteRepository) {
-    operator fun invoke(noteId: Int): Outcome<Note, NoteError> {
+    suspend operator fun invoke(noteId: Int): Outcome<Note, NoteError> {
         // TODO: Make sure Id is not negative
         return repo.getNoteById(noteId)
     }

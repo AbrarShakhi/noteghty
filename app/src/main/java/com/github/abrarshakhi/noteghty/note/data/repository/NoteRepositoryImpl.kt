@@ -97,12 +97,12 @@ class NoteRepositoryImpl : NoteRepository {
         emit(notes)
     }
 
-    override fun getNoteById(noteId: Int): Outcome<Note, NoteError> {
+    override suspend fun getNoteById(noteId: Int): Outcome<Note, NoteError> {
         notes[noteId] = notes[noteId].copy(id = noteId)
         return Outcome.ok(notes[noteId])
     }
 
-    override fun saveNote(note: Note): Outcome<Unit, NoteError> {
+    override suspend fun saveNote(note: Note): Outcome<Unit, NoteError> {
         notes.add(note)
         return Outcome.ok(Unit)
     }

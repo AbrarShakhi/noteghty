@@ -7,11 +7,12 @@ import kotlinx.serialization.Serializable
 sealed interface AppNavGraph : NavKey {
 
     @Serializable
-    sealed interface NoteNavKey : AppNavGraph {
+    object NoteNavKey : AppNavGraph {
 
         @Serializable
-        object Home : NoteNavKey
+        object Home : AppNavGraph
+
         @Serializable
-        data class Editor(val noteId: Int) : NoteNavKey
+        data class Editor(val noteId: Int) : AppNavGraph
     }
 }

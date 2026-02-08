@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
     fun getNotes(): Flow<List<Note>>
-    fun getNoteById(noteId: Int): Outcome<Note, NoteError>
-    fun saveNote(note: Note): Outcome<Unit, NoteError>
+    suspend fun getNoteById(noteId: Int): Outcome<Note, NoteError>
+    suspend fun saveNote(note: Note): Outcome<Unit, NoteError>
 }
