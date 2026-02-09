@@ -3,7 +3,7 @@ package com.github.abrarshakhi.noteghty.note.data.local.preference
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import com.github.abrarshakhi.noteghty.core.domain.listings.ListingDirection
-import com.github.abrarshakhi.noteghty.note.domain.listings.NoteOrder
+import com.github.abrarshakhi.noteghty.note.domain.listing.NoteOrder
 
 private enum class NoteOrderType(val key: String) {
     TITLE("title"), DATE("date"), COLOR("color"), PINNED("pinned");

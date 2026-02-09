@@ -51,9 +51,7 @@ fun NoteHomeScreen(
     LaunchedEffect(Unit) {
         effect.collect { it ->
             when (it) {
-                is NoteHomeEffect.Error -> snackBarHostState.showSnackbar(
-                    it.message
-                )
+                is NoteHomeEffect.Error -> snackBarHostState.showSnackbar(it.message)
             }
         }
     }
@@ -114,7 +112,7 @@ fun NoteHomeScreen(
             EmptyNotesList(padding = padding, onNewNote = { onEditNoteNavigation(null) })
         } else {
             NotesList(state.viewStyle, state.notes, padding) { note ->
-                NoteItem(note = note, onClick = onEditNoteNavigation )
+                NoteItem(note = note, onClick = onEditNoteNavigation)
             }
         }
     }

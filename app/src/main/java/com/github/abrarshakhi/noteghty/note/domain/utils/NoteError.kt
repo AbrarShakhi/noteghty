@@ -7,4 +7,6 @@ sealed interface NoteError : Error {
     object NotFound : NoteError
     object Unknown : NoteError
     object InvalidNoteId : NoteError
+    object EmptyNote : NoteError
+    object UnableToInsert: NoteError
 }

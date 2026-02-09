@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.abrarshakhi.noteghty.note.data.local.preference.setNoteListingOrder
 import com.github.abrarshakhi.noteghty.note.data.local.preference.setNoteViewStyle
-import com.github.abrarshakhi.noteghty.note.domain.listings.NoteOrder
-import com.github.abrarshakhi.noteghty.note.domain.use_case.GetNotesUseCase
+import com.github.abrarshakhi.noteghty.note.domain.listing.NoteOrder
+import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteHomeUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteHomeViewModel @Inject constructor(
-    private val prefs: SharedPreferences, private val getNotesUseCase: GetNotesUseCase
+    private val prefs: SharedPreferences, private val noteHomeUseCases: NoteHomeUseCases
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NoteHomeState())
@@ -45,7 +45,7 @@ class NoteHomeViewModel @Inject constructor(
 
     private fun loadNotes() {
         viewModelScope.launch {
-            getNotesUseCase(state.value.noteOrder).onStart {
+            noteHomeUseCases.getNotesUseCase(state.value.noteOrder).onStart {
                 _state.update { it.startLoading() }
             }.catch { e ->
                 _effect.emit(

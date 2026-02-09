@@ -1,4 +1,4 @@
-package com.github.abrarshakhi.noteghty.note.domain.listings
+package com.github.abrarshakhi.noteghty.note.domain.listing
 
 import com.github.abrarshakhi.noteghty.core.domain.listings.ListingDirection
 import com.github.abrarshakhi.noteghty.core.domain.listings.toggle

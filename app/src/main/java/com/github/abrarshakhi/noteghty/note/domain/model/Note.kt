@@ -13,34 +13,18 @@ data class Note(
 
     val updatedAt: Instant,
 ) {
-
-    /**
-     * Returns a new Note instance with updated content and timestamp.
-     */
-    fun update(
-        title: String = this.title,
-        content: String = this.content,
-        color: NoteColor = this.color,
-        isPinned: Boolean = this.isPinned,
-        isDeleted: Boolean = this.isDeleted,
-    ): Note {
-        return copy(
-            title = title,
-            content = content,
-            color = color,
-            isPinned = isPinned,
-            isDeleted = isDeleted,
-            updatedAt = Instant.now()
-        )
-    }
-
     companion object {
 
         /**
          * Factory method for creating a new Note.
          * Keeps construction explicit and readable.
          */
-        fun create(id: Long? = null, title: String, content: String, color: NoteColor, isPinned: Boolean = false
+        fun create(
+            id: Long? = null,
+            title: String,
+            content: String,
+            color: NoteColor,
+            isPinned: Boolean = false
         ): Note {
             return Note(
                 id = id,

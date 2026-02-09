@@ -25,66 +25,51 @@ import com.github.abrarshakhi.noteghty.note.presentation.ui.theme.softPink
 import com.github.abrarshakhi.noteghty.note.presentation.ui.theme.softRed
 import com.github.abrarshakhi.noteghty.note.presentation.ui.theme.tealAccent
 import com.github.abrarshakhi.noteghty.note.presentation.ui.theme.warmBrown
-import kotlin.random.Random
 
 data class NoteColor(
-    val primary: Color, val background: Color, val foreground: Color
+    val id: Long, val primary: Color, val background: Color, val foreground: Color
 ) {
     companion object {
 
         val listOfColors = listOf(
 
             NoteColor(
-                primary = forestGreen, background = lightGreen, foreground = greenBrownText
+                id = 0L, primary = forestGreen, background = lightGreen, foreground = greenBrownText
             ),
 
             NoteColor(
-                primary = oliveGreen, background = mint, foreground = greenBrownText
+                id = 0L, primary = oliveGreen, background = mint, foreground = greenBrownText
             ),
 
             NoteColor(
-                primary = amberAccent, background = paleYellow, foreground = greenBrownText
+                id = 0L, primary = amberAccent, background = paleYellow, foreground = greenBrownText
             ),
 
             NoteColor(
-                primary = warmBrown, background = lightCream, foreground = greenBrownText
+                id = 0L, primary = warmBrown, background = lightCream, foreground = greenBrownText
+            ),
+
+            NoteColor(id = 0L, primary = softRed, background = lightRed, foreground = darkText),
+
+            NoteColor(id = 0L, primary = dustyPink, background = softPink, foreground = darkText),
+
+            NoteColor(
+                id = 0L, primary = purpleAccent, background = lavender, foreground = darkText
             ),
 
             NoteColor(
-                primary = softRed, background = lightRed, foreground = darkText
+                id = 0L, primary = indigoAccent, background = lightPurple, foreground = darkText
             ),
 
-            NoteColor(
-                primary = dustyPink, background = softPink, foreground = darkText
-            ),
+            NoteColor(id = 0L, primary = skyBlue, background = lightBlue, foreground = darkText),
+
+            NoteColor(id = 0L, primary = tealAccent, background = lightCyan, foreground = darkText),
 
             NoteColor(
-                primary = purpleAccent, background = lavender, foreground = darkText
+                id = 0L, primary = oliveGreen, background = limePastel, foreground = greenBrownText
             ),
 
-            NoteColor(
-                primary = indigoAccent, background = lightPurple, foreground = darkText
-            ),
-
-            NoteColor(
-                primary = skyBlue, background = lightBlue, foreground = darkText
-            ),
-
-            NoteColor(
-                primary = tealAccent, background = lightCyan, foreground = darkText
-            ),
-
-            NoteColor(
-                primary = oliveGreen, background = limePastel, foreground = greenBrownText
-            ),
-
-            NoteColor(
-                primary = skyBlue, background = babyBlue, foreground = darkText
-            )
+            NoteColor(id = 0L, primary = skyBlue, background = babyBlue, foreground = darkText)
         )
-
-        fun random(): NoteColor {
-            return listOfColors[Random.nextInt(listOfColors.size)]
-        }
     }
 }

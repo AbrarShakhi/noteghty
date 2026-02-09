@@ -2,6 +2,8 @@ package com.github.abrarshakhi.noteghty.core.di
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.github.abrarshakhi.noteghty.note.data.local.database.NoteDatabase
+import com.github.abrarshakhi.noteghty.note.data.local.database.dao.NoteDao
 import com.github.abrarshakhi.noteghty.note.data.repository.NoteRepositoryImpl
 import com.github.abrarshakhi.noteghty.note.domain.repository.NoteRepository
 import dagger.Module
@@ -32,9 +34,25 @@ object AppModule {
     object RepositoryModule {
         @Provides
         @Singleton
-        fun provideNoteRepository() : NoteRepository {
-            return NoteRepositoryImpl()
+        fun provideNoteRepository(noteDao: NoteDao): NoteRepository {
+            return NoteRepositoryImpl(noteDao)
         }
     }
 
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object DatabaseModule {
+
+        @Provides
+        @Singleton
+        fun provideDatabase(
+            @ApplicationContext context: Context
+        ): NoteDatabase = NoteDatabase.getDatabase(context)
+
+        @Provides
+        fun provideNoteDao(
+            database: NoteDatabase
+        ): NoteDao = database.noteDao()
+    }
 }

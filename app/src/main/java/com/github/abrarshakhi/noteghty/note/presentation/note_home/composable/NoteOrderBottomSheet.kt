@@ -19,8 +19,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.core.domain.listings.ListingDirection
-import com.github.abrarshakhi.noteghty.note.domain.listings.NoteOrder
-import com.github.abrarshakhi.noteghty.note.domain.listings.copyDirection
+import com.github.abrarshakhi.noteghty.note.domain.listing.NoteOrder
+import com.github.abrarshakhi.noteghty.note.domain.listing.copyDirection
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

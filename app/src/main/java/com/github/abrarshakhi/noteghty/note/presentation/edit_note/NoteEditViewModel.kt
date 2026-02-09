@@ -7,6 +7,7 @@ import com.github.abrarshakhi.noteghty.core.domain.utils.Outcome
 import com.github.abrarshakhi.noteghty.core.domain.utils.onErr
 import com.github.abrarshakhi.noteghty.core.domain.utils.onOk
 import com.github.abrarshakhi.noteghty.note.domain.use_case.GetNoteByIdUseCase
+import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
 import com.github.abrarshakhi.noteghty.note.domain.use_case.SaveNoteUseCase
 import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +24,7 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class, DelicateCoroutinesApi::class)
 @HiltViewModel
 class NoteEditViewModel @Inject constructor(
-    private val getNoteByIdUseCase: GetNoteByIdUseCase,
-    private val saveNoteUseCase: SaveNoteUseCase,
+    private val noteEditUseCases: NoteEditUseCases,
     val savedStateHandle: SavedStateHandle, // TODO: Deal with this later.
 ) : ViewModel() {
 
@@ -64,7 +64,7 @@ class NoteEditViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getNoteByIdUseCase(noteId).onErr { e -> _effect.emit(NoteEditEffect.Error("Not Not Found")) }
+            noteEditUseCases.getNoteByIdUseCase(noteId).onErr { e -> _effect.emit(NoteEditEffect.Error("Not Not Found")) }
                 .onOk { note ->
                     update { copy(isLoading = false) }
                 }
@@ -78,7 +78,7 @@ class NoteEditViewModel @Inject constructor(
     }
 
     private suspend fun saveState(state: NoteEditState): Outcome<Long, NoteError> =
-        saveNoteUseCase(state.note!!).onOk { newId -> update { copy(note = note?.copy(id = newId)) } }
+        noteEditUseCases.saveNoteUseCase(state.note!!).onOk { newId -> update { copy(note = note?.copy(id = newId)) } }
 
 
     private fun saveForcedAndNotify() {

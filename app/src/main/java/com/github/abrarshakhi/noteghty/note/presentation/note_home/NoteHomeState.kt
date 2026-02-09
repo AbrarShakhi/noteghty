@@ -1,7 +1,7 @@
 package com.github.abrarshakhi.noteghty.note.presentation.note_home
 
 import com.github.abrarshakhi.noteghty.core.domain.listings.ListingDirection
-import com.github.abrarshakhi.noteghty.note.domain.listings.NoteOrder
+import com.github.abrarshakhi.noteghty.note.domain.listing.NoteOrder
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteViewStyle
 
