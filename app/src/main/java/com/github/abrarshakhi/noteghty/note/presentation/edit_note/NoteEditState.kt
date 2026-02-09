@@ -1,7 +1,7 @@
 package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
-data class NoteEditState(val isLoading: Boolean = true) {
-    fun startLoading(): NoteEditState {
-        return this.copy(isLoading = true)
-    }
-}
+import com.github.abrarshakhi.noteghty.note.domain.model.Note
+
+data class NoteEditState(
+    val isLoading: Boolean = true, val note: Note? = null
+)

@@ -3,7 +3,7 @@ package com.github.abrarshakhi.noteghty.note.domain.model
 import java.time.Instant
 
 data class Note(
-    val id: Int?,
+    val id: Long?,
     val title: String,
     val content: String,
 
@@ -11,7 +11,6 @@ data class Note(
     val isPinned: Boolean = false,
     val isDeleted: Boolean = false,
 
-    val createdAt: Instant,
     val updatedAt: Instant,
 ) {
 
@@ -41,15 +40,14 @@ data class Note(
          * Factory method for creating a new Note.
          * Keeps construction explicit and readable.
          */
-        fun create(title: String, content: String, color: NoteColor, isPinned: Boolean = false
+        fun create(id: Long? = null, title: String, content: String, color: NoteColor, isPinned: Boolean = false
         ): Note {
             return Note(
-                id = null,
+                id = id,
                 title = title,
                 content = content,
                 color = color,
                 isPinned = isPinned,
-                createdAt = Instant.now(),
                 updatedAt = Instant.now(),
             )
         }

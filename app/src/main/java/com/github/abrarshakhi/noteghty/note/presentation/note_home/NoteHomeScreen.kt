@@ -43,7 +43,7 @@ fun NoteHomeScreen(
     state: NoteHomeState,
     effect: Flow<NoteHomeEffect>,
     onIntent: (NoteHomeIntent) -> Unit,
-    onEditNoteNavigation: (Int) -> Unit,
+    onEditNoteNavigation: (Long?) -> Unit,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     var showSortSheet by remember { mutableStateOf(false) }
@@ -93,7 +93,7 @@ fun NoteHomeScreen(
         })
     }, floatingActionButton = {
         if (state.notes.isNotEmpty()) {
-            FloatingActionButton(onClick = { onEditNoteNavigation(-1) }, shape = CircleShape) {
+            FloatingActionButton(onClick = { onEditNoteNavigation(null) }, shape = CircleShape) {
                 Icon(
                     painter = painterResource(R.drawable.outline_edit_square_24),
                     contentDescription = "add new note",
@@ -111,10 +111,10 @@ fun NoteHomeScreen(
         }
 
         if (state.notes.isEmpty()) {
-            EmptyNotesList(padding = padding, onNewNote = { onEditNoteNavigation(-1) })
+            EmptyNotesList(padding = padding, onNewNote = { onEditNoteNavigation(null) })
         } else {
             NotesList(state.viewStyle, state.notes, padding) { note ->
-                NoteItem(note = note, onClick = { n -> onEditNoteNavigation(n) })
+                NoteItem(note = note, onClick = onEditNoteNavigation )
             }
         }
     }

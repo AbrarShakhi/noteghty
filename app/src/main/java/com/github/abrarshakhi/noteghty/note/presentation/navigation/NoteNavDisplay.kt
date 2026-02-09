@@ -39,8 +39,11 @@ fun NoteNavDisplay(startDestination: NavKey = AppNavGraph.NoteNavKey.Home) {
                 val viewModel: NoteEditViewModel = hiltViewModel(key = it.noteId.toString())
                 val state by viewModel.state.collectAsStateWithLifecycle()
                 NoteEditScreen(
-                    state = state, effect = viewModel.effect, onIntent = viewModel::onIntent
-                )
+                    noteId = it.noteId,
+                    state = state,
+                    effect = viewModel.effect,
+                    onIntent = viewModel::onIntent,
+                    onBack = { noteBackStack.removeLastOrNull() })
             }
         })
 }

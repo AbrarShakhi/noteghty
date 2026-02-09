@@ -22,12 +22,12 @@ import com.github.abrarshakhi.noteghty.core.domain.utils.toDayMonth
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 
 @Composable
-fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Int) -> Unit) {
+fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Long?) -> Unit) {
     Card(
         modifier = modifier
             .fillMaxWidth()
             .combinedClickable(enabled = true, onClick = {
-                onClick(note.id ?: -1)
+                onClick(note.id)
             }, onLongClick = {}),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
