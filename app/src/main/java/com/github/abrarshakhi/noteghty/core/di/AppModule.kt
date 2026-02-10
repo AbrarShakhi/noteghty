@@ -11,11 +11,32 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Module
+    @InstallIn(SingletonComponent::class)
+    object CoroutineScopeModule {
+
+        @Qualifier
+        @Retention(AnnotationRetention.BINARY)
+        annotation class ApplicationScope
+
+        @Provides
+        @Singleton
+        @ApplicationScope
+        fun provideApplicationCoroutineScope(): CoroutineScope =
+            CoroutineScope(SupervisorJob() + Dispatchers.IO)
+
+    }
+
     @Module
     @InstallIn(SingletonComponent::class)
     object PreferencesModule {
@@ -34,8 +55,11 @@ object AppModule {
     object RepositoryModule {
         @Provides
         @Singleton
-        fun provideNoteRepository(noteDao: NoteDao): NoteRepository {
-            return NoteRepositoryImpl(noteDao)
+        fun provideNoteRepository(
+            noteDao: NoteDao,
+            @CoroutineScopeModule.ApplicationScope applicationScope: CoroutineScope
+        ): NoteRepository {
+            return NoteRepositoryImpl(noteDao, applicationScope)
         }
     }
 

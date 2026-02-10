@@ -22,9 +22,14 @@ fun <E> Outcome<*, E>.isErr(): Boolean = this is Outcome.Err<E>
 fun <T> Outcome<T, *>.getOrNull(): T? = (this as? Outcome.Ok)?.data
 fun <E> Outcome<*, E>.errorOrNull(): E? = (this as? Outcome.Err)?.error
 
-inline fun <T> Outcome<T, *>.getOrThrow(error: () -> Throwable): T = when (this) {
+inline fun <T> Outcome<T, *>.getOrThrow(throwable: () -> Throwable): T = when (this) {
     is Outcome.Ok -> data
-    is Outcome.Err -> throw error()
+    is Outcome.Err -> throw throwable()
+}
+
+inline fun <E> Outcome<*, E>.errorOrThrow(throwable: () -> Throwable): E = when (this) {
+    is Outcome.Ok -> throw throwable()
+    is Outcome.Err -> error
 }
 
 inline fun <T, E> Outcome<T, E>.getOrElse(onError: (E) -> T): T = when (this) {

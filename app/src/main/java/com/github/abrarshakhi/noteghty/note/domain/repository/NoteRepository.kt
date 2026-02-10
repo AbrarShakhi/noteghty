@@ -11,4 +11,5 @@ interface NoteRepository {
     fun getNoteColors(): Flow<List<NoteColor>>
     suspend fun getNoteById(noteId: Long): Outcome<Note, NoteError>
     suspend fun saveNote(note: Note): Outcome<Long, NoteError>
+    suspend fun saveNoteAsync(note: Note)
 }

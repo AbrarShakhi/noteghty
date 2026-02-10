@@ -19,12 +19,13 @@ data class Note(
          * Factory method for creating a new Note.
          * Keeps construction explicit and readable.
          */
-        fun create(
+        fun newInstance(
             id: Long? = null,
             title: String,
             content: String,
             color: NoteColor,
-            isPinned: Boolean = false
+            isPinned: Boolean = false,
+            isDeleted: Boolean = false,
         ): Note {
             return Note(
                 id = id,
@@ -32,6 +33,7 @@ data class Note(
                 content = content,
                 color = color,
                 isPinned = isPinned,
+                isDeleted = isDeleted,
                 updatedAt = Instant.now(),
             )
         }

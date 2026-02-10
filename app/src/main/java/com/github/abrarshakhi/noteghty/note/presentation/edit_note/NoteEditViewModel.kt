@@ -1,15 +1,10 @@
 package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.abrarshakhi.noteghty.core.domain.utils.Outcome
 import com.github.abrarshakhi.noteghty.core.domain.utils.onErr
 import com.github.abrarshakhi.noteghty.core.domain.utils.onOk
-import com.github.abrarshakhi.noteghty.note.domain.use_case.GetNoteByIdUseCase
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
-import com.github.abrarshakhi.noteghty.note.domain.use_case.SaveNoteUseCase
-import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -24,11 +19,8 @@ import javax.inject.Inject
 @OptIn(FlowPreview::class, DelicateCoroutinesApi::class)
 @HiltViewModel
 class NoteEditViewModel @Inject constructor(
-    private val noteEditUseCases: NoteEditUseCases,
-    val savedStateHandle: SavedStateHandle, // TODO: Deal with this later.
+    private val useCases: NoteEditUseCases,
 ) : ViewModel() {
-
-    private val STATE_KEY = "note_editor_state"
 
     private val _effect = MutableSharedFlow<NoteEditEffect>()
     val effect = _effect.asSharedFlow()
@@ -41,51 +33,47 @@ class NoteEditViewModel @Inject constructor(
         val updated = current.reducer()
         if (current != updated) {
             _state.update { updated }
-            savedStateHandle[STATE_KEY] = updated
         }
     }
 
-
     fun onIntent(intent: NoteEditIntent) {
         when (intent) {
-            is NoteEditIntent.Load -> {}
-            is NoteEditIntent.TitleChanged -> {}
-            is NoteEditIntent.BodyChanged -> {}
-            is NoteEditIntent.ColorChanged -> {}
-            is NoteEditIntent.PinToggled -> {}
-            is NoteEditIntent.SaveForcedAndNotify -> {}
+            is NoteEditIntent.Load -> loadNote(intent.noteId)
+            is NoteEditIntent.TogglePinned -> update { togglePinned() }
+            is NoteEditIntent.ChangeTitleOrContent -> onChangeTitleOrContent(intent)
+            is NoteEditIntent.SaveAsynchronous -> saveAsynchronously()
         }
     }
 
     private fun loadNote(noteId: Long?) {
         if (noteId == null) {
-            update { copy(isLoading = false) }
+            update { stopLoading() }
             return
         }
-
+        update { startLoading() }
         viewModelScope.launch {
-            noteEditUseCases.getNoteByIdUseCase(noteId).onErr { e -> _effect.emit(NoteEditEffect.Error("Not Not Found")) }
-                .onOk { note ->
-                    update { copy(isLoading = false) }
-                }
-        }
-    }
-
-    private fun saveOrPass() {
-        if (state.value.isLoading) return
-
-        viewModelScope.launch { saveState(state.value) }
-    }
-
-    private suspend fun saveState(state: NoteEditState): Outcome<Long, NoteError> =
-        noteEditUseCases.saveNoteUseCase(state.note!!).onOk { newId -> update { copy(note = note?.copy(id = newId)) } }
-
-
-    private fun saveForcedAndNotify() {
-        viewModelScope.launch {
-            saveState(state.value).onOk { newId ->
-                _effect.emit(NoteEditEffect.SavedSuccessfulAndReadyToGoBack)
+            useCases.getNoteByIdUseCase(noteId).onOk { note ->
+                update { fromNote(note) }
+            }.onErr { e ->
+                _effect.emit(NoteEditEffect.Error("Not Not Found"))
+                update { stopLoading() }
             }
         }
+    }
+
+    private fun onChangeTitleOrContent(changeIntent: NoteEditIntent.ChangeTitleOrContent) {
+        when (changeIntent) {
+            is NoteEditIntent.ChangeTitleOrContent.Content -> update {
+                copy(content = changeIntent.newContent)
+            }
+
+            is NoteEditIntent.ChangeTitleOrContent.Title -> update {
+                copy(title = changeIntent.newTitle)
+            }
+        }
+    }
+
+    private fun saveAsynchronously() {
+        viewModelScope.launch { useCases.saveNoteUseCase.async(state.value.toNote()) }
     }
 }

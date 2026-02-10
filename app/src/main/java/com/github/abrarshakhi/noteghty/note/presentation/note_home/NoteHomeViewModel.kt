@@ -22,7 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteHomeViewModel @Inject constructor(
-    private val prefs: SharedPreferences, private val noteHomeUseCases: NoteHomeUseCases
+    private val prefs: SharedPreferences, private val useCases: NoteHomeUseCases
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NoteHomeState())
@@ -45,7 +45,7 @@ class NoteHomeViewModel @Inject constructor(
 
     private fun loadNotes() {
         viewModelScope.launch {
-            noteHomeUseCases.getNotesUseCase(state.value.noteOrder).onStart {
+            useCases.getNotesUseCase(state.value.noteOrder).onStart {
                 _state.update { it.startLoading() }
             }.catch { e ->
                 _effect.emit(
