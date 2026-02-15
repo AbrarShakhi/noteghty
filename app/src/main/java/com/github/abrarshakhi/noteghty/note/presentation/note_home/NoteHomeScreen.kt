@@ -30,6 +30,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
+import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteViewStyle
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.EmptyNotesList
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NoteItem
@@ -43,7 +44,7 @@ fun NoteHomeScreen(
     state: NoteHomeState,
     effect: Flow<NoteHomeEffect>,
     onIntent: (NoteHomeIntent) -> Unit,
-    onEditNoteNavigation: (Long?) -> Unit,
+    onEditNoteNavigation: (Note?) -> Unit,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     var showSortSheet by remember { mutableStateOf(false) }

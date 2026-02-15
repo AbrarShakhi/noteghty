@@ -8,12 +8,15 @@ import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class, DelicateCoroutinesApi::class)
@@ -36,11 +39,28 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
+    private val saveMutex = Mutex()
+
+    init {
+        update { populateColors(useCases.getNoteColorsUseCase()) }
+        startAutoSave()
+    }
+
+    private fun startAutoSave() {
+        viewModelScope.launch {
+            while (true) {
+                delay(1000)
+                saveMutex.withLock {
+                    useCases.saveNoteUseCase.sync(state.value.toNote())
+                }
+            }
+        }
+    }
+
     fun onIntent(intent: NoteEditIntent) {
         when (intent) {
             is NoteEditIntent.Load -> loadNote(intent.noteId)
-            is NoteEditIntent.TogglePinned -> update { togglePinned() }
-            is NoteEditIntent.ChangeTitleOrContent -> onChangeTitleOrContent(intent)
+            is NoteEditIntent.Set -> setNewState(intent)
             is NoteEditIntent.SaveAsynchronous -> saveAsynchronously()
         }
     }
@@ -61,15 +81,22 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
-    private fun onChangeTitleOrContent(changeIntent: NoteEditIntent.ChangeTitleOrContent) {
+    private fun setNewState(changeIntent: NoteEditIntent.Set) {
         when (changeIntent) {
-            is NoteEditIntent.ChangeTitleOrContent.Content -> update {
-                copy(content = changeIntent.newContent)
-            }
+            is NoteEditIntent.Set.Content -> update { copy(content = changeIntent.newContent) }
 
-            is NoteEditIntent.ChangeTitleOrContent.Title -> update {
-                copy(title = changeIntent.newTitle)
-            }
+            is NoteEditIntent.Set.Title -> update { copy(title = changeIntent.newTitle) }
+
+            is NoteEditIntent.Set.TogglePinned -> update { togglePinned() }
+
+            is NoteEditIntent.Set.Color -> setColorFromId(changeIntent.colorId)
+        }
+    }
+
+    private fun setColorFromId(colorId: Long) {
+        val listOfColors = state.value.listOfColors
+        listOfColors.find { it.id == colorId }?.let { color ->
+            update { copy(color = color) }
         }
     }
 

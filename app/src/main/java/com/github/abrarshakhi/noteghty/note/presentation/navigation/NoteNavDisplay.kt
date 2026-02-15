@@ -13,6 +13,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.github.abrarshakhi.noteghty.core.presentation.navigation.AppNavGraph
 import com.github.abrarshakhi.noteghty.note.presentation.edit_note.NoteEditScreen
 import com.github.abrarshakhi.noteghty.note.presentation.edit_note.NoteEditViewModel
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeIntent
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeScreen
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeViewModel
 
@@ -21,29 +22,42 @@ import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeViewM
 fun NoteNavDisplay(startDestination: NavKey = AppNavGraph.NoteNavKey.Home) {
     val noteBackStack = rememberNavBackStack(startDestination)
 
+    val homeViewModel: NoteHomeViewModel = hiltViewModel()
+    val homeState by homeViewModel.state.collectAsStateWithLifecycle()
+
     NavDisplay(
         backStack = noteBackStack, entryDecorators = listOf(
             rememberSaveableStateHolderNavEntryDecorator(),
             rememberViewModelStoreNavEntryDecorator()
         ), entryProvider = entryProvider {
             entry<AppNavGraph.NoteNavKey.Home> {
-                val viewModel: NoteHomeViewModel = hiltViewModel()
-                val state by viewModel.state.collectAsStateWithLifecycle()
                 NoteHomeScreen(
-                    state = state,
-                    effect = viewModel.effect,
-                    onIntent = viewModel::onIntent,
-                    onEditNoteNavigation = { noteBackStack.add(AppNavGraph.NoteNavKey.Editor(it)) })
+                    state = homeState,
+                    effect = homeViewModel.effect,
+                    onIntent = homeViewModel::onIntent,
+                    onEditNoteNavigation = {
+                        noteBackStack.add(
+                            AppNavGraph.NoteNavKey.Editor(
+                                it?.id,
+                                it?.color?.id
+                            )
+                        )
+                    })
             }
-            entry<AppNavGraph.NoteNavKey.Editor> { it ->
-                val viewModel: NoteEditViewModel = hiltViewModel(key = it.noteId.toString())
-                val state by viewModel.state.collectAsStateWithLifecycle()
+            entry<AppNavGraph.NoteNavKey.Editor> { (noteId, colorId) ->
+                val editViewModel: NoteEditViewModel = hiltViewModel(key = noteId.toString() + colorId.toString())
+                val editState by editViewModel.state.collectAsStateWithLifecycle()
                 NoteEditScreen(
-                    noteId = it.noteId,
-                    state = state,
-                    effect = viewModel.effect,
-                    onIntent = viewModel::onIntent,
-                    onBack = { noteBackStack.removeLastOrNull() })
+                    noteId = noteId,
+                    colorId = colorId,
+                    state = editState,
+                    effect = editViewModel.effect,
+                    onIntent = editViewModel::onIntent,
+                    onBack = {
+                        homeViewModel.onIntent(NoteHomeIntent.LoadNotes)
+                        noteBackStack.removeLastOrNull()
+                    },
+                )
             }
         })
 }

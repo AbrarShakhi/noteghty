@@ -8,5 +8,5 @@ import androidx.room.PrimaryKey
 data class NoteColorEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0L,
 
-    val primaryColor: Long, val backgroundColor: Long, val foregroundColor: Long
+    val primaryColor: Long, val backgroundColor: Long, val isLightForeground: Boolean
 )

@@ -22,12 +22,18 @@ import com.github.abrarshakhi.noteghty.core.domain.utils.toDayMonth
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 
 @Composable
-fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Long?) -> Unit) {
+fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Note?) -> Unit) {
+    val foregroundColor = if (note.color.isLightForeground) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
+
     Card(
         modifier = modifier
             .fillMaxWidth()
             .combinedClickable(enabled = true, onClick = {
-                onClick(note.id)
+                onClick(note)
             }, onLongClick = {}),
         shape = RoundedCornerShape(8.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
@@ -39,13 +45,13 @@ fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Long?) -> Unit
             Text(
                 text = note.title,
                 style = MaterialTheme.typography.titleMedium,
-                color = note.color.foreground,
+                color = foregroundColor,
             )
             Spacer(modifier.padding(top = 4.dp))
             Text(
                 text = note.content,
                 style = MaterialTheme.typography.bodyMedium,
-                color = note.color.foreground,
+                color = foregroundColor,
                 maxLines = 5
             )
             Spacer(modifier.padding(top = 4.dp))
@@ -55,16 +61,16 @@ fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Long?) -> Unit
             ) {
                 if (note.isPinned) {
                     Icon(
-                        painter = painterResource(R.drawable.outline_import_contacts_24),
+                        painter = painterResource(R.drawable.baseline_thumb_up_24),
                         contentDescription = "pinned",
-                        tint = note.color.foreground
+                        tint = foregroundColor
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
                     text = note.updatedAt.toDayMonth(),
                     style = MaterialTheme.typography.bodySmall,
-                    color = note.color.foreground,
+                    color = foregroundColor,
                     maxLines = 1
                 )
             }

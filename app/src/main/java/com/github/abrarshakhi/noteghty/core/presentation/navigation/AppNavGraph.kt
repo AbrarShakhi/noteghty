@@ -13,6 +13,6 @@ sealed interface AppNavGraph : NavKey {
         object Home : AppNavGraph
 
         @Serializable
-        data class Editor(val noteId: Long?) : AppNavGraph
+        data class Editor(val noteId: Long?, val colorId: Long?) : AppNavGraph
     }
 }

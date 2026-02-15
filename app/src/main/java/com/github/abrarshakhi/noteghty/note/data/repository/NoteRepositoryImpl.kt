@@ -18,22 +18,26 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.cancellation.CancellationException
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
     @param:AppModule.CoroutineScopeModule.ApplicationScope private val applicationScope: CoroutineScope
 ) : NoteRepository {
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getNotes(): Flow<List<Note>> {
-        return noteDao.getNotesWithColors().mapLatest { list ->
-            list.map { noteWithColor -> noteWithColor.toDomain() }
+    @Volatile
+    private var cachedColors: List<NoteColor> = emptyList()
+
+    init {
+        applicationScope.launch {
+            cachedColors = noteDao.getNoteColors().map { it.toDomain() }
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun getNoteColors(): Flow<List<NoteColor>> {
-        return noteDao.getNoteColors().mapLatest { list ->
-            list.map { noteColor -> noteColor.toDomain() }
+    override fun getNoteColors(): List<NoteColor> = cachedColors
+
+    override fun getNotes(): Flow<List<Note>> {
+        return noteDao.getNotesWithColors().mapLatest { list ->
+            list.map { noteWithColor -> noteWithColor.toDomain() }
         }
     }
 

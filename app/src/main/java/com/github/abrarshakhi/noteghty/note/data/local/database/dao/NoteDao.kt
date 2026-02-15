@@ -30,5 +30,5 @@ interface NoteDao {
     suspend fun clearAllNoteColors()
 
     @Query("SELECT * FROM note_colors")
-    fun getNoteColors(): Flow<List<NoteColorEntity>>
+    fun getNoteColors(): List<NoteColorEntity>
 }

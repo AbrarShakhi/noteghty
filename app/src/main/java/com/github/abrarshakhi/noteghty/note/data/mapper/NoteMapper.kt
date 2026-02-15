@@ -17,7 +17,7 @@ fun NoteWithColorRelation.toDomain(): Note {
             id = color.id,
             primary = Color(color.primaryColor),
             background = Color(color.backgroundColor),
-            foreground = Color(color.foregroundColor)
+            isLightForeground = color.isLightForeground
         ),
         isPinned = note.isPinned,
         isDeleted = note.isDeleted,
@@ -30,7 +30,7 @@ fun NoteColorEntity.toDomain(): NoteColor {
         id = id,
         primary = Color(primaryColor),
         background = Color(backgroundColor),
-        foreground = Color(foregroundColor)
+        isLightForeground = isLightForeground
     )
 }
 
@@ -39,7 +39,7 @@ fun NoteColor.toEntity(): NoteColorEntity {
         id = id,
         primaryColor = primary.value.toLong(),
         backgroundColor = background.value.toLong(),
-        foregroundColor = foreground.value.toLong()
+        isLightForeground = isLightForeground
     )
 }
 
