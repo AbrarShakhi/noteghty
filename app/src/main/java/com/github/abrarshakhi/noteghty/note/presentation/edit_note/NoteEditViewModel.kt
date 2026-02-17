@@ -2,9 +2,9 @@ package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.abrarshakhi.noteghty.core.domain.utils.onErr
-import com.github.abrarshakhi.noteghty.core.domain.utils.onOk
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
+import com.github.abrarshakhi.outcome.onErr
+import com.github.abrarshakhi.outcome.onOk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
