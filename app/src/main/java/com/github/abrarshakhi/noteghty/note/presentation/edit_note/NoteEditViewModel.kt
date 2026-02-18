@@ -93,7 +93,7 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
-    private fun setColorFromId(colorId: Long) {
+    private fun setColorFromId(colorId: Int) {
         state.value.listOfColors.find { it.id == colorId }?.let { color ->
             update { copy(color = color) }
         }

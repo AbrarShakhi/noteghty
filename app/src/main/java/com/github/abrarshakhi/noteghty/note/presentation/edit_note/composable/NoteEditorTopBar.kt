@@ -42,7 +42,7 @@ fun NoteEditorTopBar(
     listOfColors: List<NoteColor>,
     onBackPress: () -> Unit,
     onPinnedChange: (Boolean) -> Unit,
-    onColorPick: (Int, Long) -> Unit
+    onColorPick: (Int, Int) -> Unit
 ) {
     var isThemeFocus by remember { mutableStateOf(false) }
 
@@ -82,7 +82,7 @@ fun NoteEditorTopBar(
 
 @Composable
 fun ThemeActions(
-    listOfColors: List<NoteColor>, selectedColorId: Long, onColorPick: (Int, Long) -> Unit
+    listOfColors: List<NoteColor>, selectedColorId: Int, onColorPick: (Int, Int) -> Unit
 ) {
     LazyRow(
         modifier = Modifier.fillMaxWidth().padding(start = 50.dp),

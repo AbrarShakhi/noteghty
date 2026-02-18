@@ -11,10 +11,10 @@ data class NoteEntity(
     val title: String,
     val content: String,
 
-    val colorId: Long,
-    val primaryColor: Long,
-    val backgroundColor: Long,
-    val isLightForeground: Boolean,
+    val colorId: Int,
+//    val primaryColor: Int,
+//    val backgroundColor: Int,
+//    val isLightForeground: Boolean,
 
     val isPinned: Boolean,
     val isDeleted: Boolean,

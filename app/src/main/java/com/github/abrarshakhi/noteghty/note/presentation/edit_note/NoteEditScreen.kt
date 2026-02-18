@@ -46,7 +46,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun NoteEditScreen(
     noteId: Long?,
-    colorId: Long?,
+    colorId: Int?,
     state: NoteEditState,
     effect: Flow<NoteEditEffect>,
     onIntent: (NoteEditIntent) -> Unit,
