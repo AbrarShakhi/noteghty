@@ -11,13 +11,11 @@ data class NoteEditState(
     val title: String = "",
     val content: String = "",
 
-    val color: NoteColor = NoteColor.listOfColors.random(),
+    val color: NoteColor,
     val isPinned: Boolean = false,
     val isDeleted: Boolean = false,
-    val listOfColors: List<NoteColor> = emptyList(),
+    val listOfColors: List<NoteColor> = NoteColor.listOfColors,
 ) {
-    fun populateColors(listOfColors: List<NoteColor>) = copy(listOfColors = listOfColors)
-
     fun startLoading(): NoteEditState = if (!isLoading) copy(isLoading = true) else this
 
     fun stopLoading(): NoteEditState = if (isLoading) copy(isLoading = false) else this

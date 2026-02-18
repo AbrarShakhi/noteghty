@@ -2,6 +2,7 @@ package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
 import com.github.abrarshakhi.outcome.onErr
 import com.github.abrarshakhi.outcome.onOk
@@ -28,7 +29,7 @@ class NoteEditViewModel @Inject constructor(
     private val _effect = MutableSharedFlow<NoteEditEffect>()
     val effect = _effect.asSharedFlow()
 
-    private val _state = MutableStateFlow(NoteEditState())
+    private val _state = MutableStateFlow(NoteEditState(color = NoteColor.listOfColors.random()))
     val state = _state.asStateFlow()
 
     private inline fun update(reducer: NoteEditState.() -> NoteEditState) {
@@ -42,7 +43,6 @@ class NoteEditViewModel @Inject constructor(
     private val saveMutex = Mutex()
 
     init {
-        update { populateColors(useCases.getNoteColorsUseCase()) }
         startAutoSave()
     }
 
@@ -51,7 +51,9 @@ class NoteEditViewModel @Inject constructor(
             while (true) {
                 delay(1000)
                 saveMutex.withLock {
-                    useCases.saveNoteUseCase.sync(state.value.toNote())
+                    useCases.saveNoteUseCase.sync(state.value.toNote()).onOk { noteId ->
+                        update { copy(id = noteId) }
+                    }
                 }
             }
         }
@@ -94,8 +96,7 @@ class NoteEditViewModel @Inject constructor(
     }
 
     private fun setColorFromId(colorId: Long) {
-        val listOfColors = state.value.listOfColors
-        listOfColors.find { it.id == colorId }?.let { color ->
+        state.value.listOfColors.find { it.id == colorId }?.let { color ->
             update { copy(color = color) }
         }
     }

@@ -4,10 +4,15 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.ime
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
@@ -22,13 +27,17 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.github.abrarshakhi.noteghty.note.presentation.edit_note.composable.NoteEditorBottomBar
 import com.github.abrarshakhi.noteghty.note.presentation.edit_note.composable.NoteEditorTopBar
 import kotlinx.coroutines.flow.Flow
 
@@ -48,8 +57,8 @@ fun NoteEditScreen(
     val focusManager = LocalFocusManager.current
 
     val scrollState = rememberScrollState()
-    rememberCoroutineScope()
 
+    var isContentFocused by remember { mutableStateOf(false) }
 
     // Load note if needed
     LaunchedEffect(noteId) {
@@ -60,7 +69,7 @@ fun NoteEditScreen(
     LaunchedEffect(colorId) { colorId?.let { onIntent(NoteEditIntent.Set.Color(it)) } }
 
     LaunchedEffect(Unit) {
-        effect.collect { it ->
+        effect.collect {
             when (it) {
                 is NoteEditEffect.Error -> snackbarHostState.showSnackbar(it.message)
                 is NoteEditEffect.SavedSuccessfulAndReadyToGoBack -> onBack()
@@ -73,25 +82,32 @@ fun NoteEditScreen(
         onBack()
     }
 
-
     Scaffold(
         topBar = {
-        NoteEditorTopBar(state = state, onBackPress = {
-            onIntent(NoteEditIntent.SaveAsynchronous)
-            onBack()
-        }, onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) })
-    },
+            NoteEditorTopBar(
+                isPinned = state.isPinned,
+                color = state.color,
+                listOfColors = state.listOfColors,
+                onBackPress = {
+                    onIntent(NoteEditIntent.SaveAsynchronous)
+                    onBack()
+                },
+                onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) },
+                onColorPick = { _, colorId ->
+                    onIntent(NoteEditIntent.Set.Color(colorId))
+                })
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
+        bottomBar = {
+            NoteEditorBottomBar(isContentTextFieldFocus = isContentFocused)
+        },
+        modifier = Modifier.fillMaxSize().imePadding().navigationBarsPadding()
+            .windowInsetsPadding(WindowInsets.ime),
+        contentWindowInsets = WindowInsets.safeDrawing,
     ) { paddingValues ->
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(paddingValues)
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(paddingValues)
                 .background(state.color.background)
         ) {
             if (state.isLoading) {
@@ -101,9 +117,7 @@ fun NoteEditScreen(
             BasicTextField(
                 value = state.title,
                 onValueChange = { onIntent(NoteEditIntent.Set.Title(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textStyle = MaterialTheme.typography.headlineSmall.copy(
                     color = MaterialTheme.colorScheme.onBackground
                 ),
@@ -125,17 +139,16 @@ fun NoteEditScreen(
 
             // Content
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) // fills remaining space
+                modifier = Modifier.fillMaxSize().weight(1f) // fills remaining space
                     .padding(horizontal = 8.dp)
             ) {
                 BasicTextField(
                     value = state.content,
                     onValueChange = { onIntent(NoteEditIntent.Set.Content(it)) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxSize().padding(top = 8.dp)
+                        .onFocusChanged { currentState ->
+                            isContentFocused = currentState.isFocused
+                        },
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onBackground
                     ),

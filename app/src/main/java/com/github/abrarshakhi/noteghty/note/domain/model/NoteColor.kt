@@ -28,7 +28,6 @@ data class NoteColor(
     val id: Long, val primary: Color, val background: Color, val isLightForeground: Boolean = false,
 ) {
     companion object {
-
         val listOfColors = listOf(
 
             NoteColor(
@@ -36,48 +35,46 @@ data class NoteColor(
             ),
 
             NoteColor(
-                id = 0L, primary = oliveGreen, background = mint, isLightForeground = false
+                id = 1L, primary = oliveGreen, background = mint, isLightForeground = false
             ),
 
             NoteColor(
-                id = 0L, primary = amberAccent, background = paleYellow, isLightForeground = false
+                id = 2L, primary = amberAccent, background = paleYellow, isLightForeground = false
             ),
 
             NoteColor(
-                id = 0L, primary = warmBrown, background = lightCream, isLightForeground = false
-            ),
-
-            NoteColor(id = 0L, primary = softRed, background = lightRed, isLightForeground = true),
-
-            NoteColor(
-                id = 0L,
-                primary = dustyPink,
-                background = softPink,
-                isLightForeground = true
+                id = 3L, primary = warmBrown, background = lightCream, isLightForeground = false
             ),
 
             NoteColor(
-                id = 0L, primary = purpleAccent, background = lavender, isLightForeground = true
+                id = 4L, primary = softRed, background = lightRed, isLightForeground = true
             ),
 
             NoteColor(
-                id = 0L, primary = indigoAccent, background = lightPurple, isLightForeground = true
-            ),
-
-            NoteColor(id = 0L, primary = skyBlue, background = lightBlue, isLightForeground = true),
-
-            NoteColor(
-                id = 0L,
-                primary = tealAccent,
-                background = lightCyan,
-                isLightForeground = true
+                id = 5L, primary = dustyPink, background = softPink, isLightForeground = true
             ),
 
             NoteColor(
-                id = 0L, primary = oliveGreen, background = limePastel, isLightForeground = false
+                id = 6L, primary = purpleAccent, background = lavender, isLightForeground = true
             ),
 
-            NoteColor(id = 0L, primary = skyBlue, background = babyBlue, isLightForeground = true)
+            NoteColor(
+                id = 7L, primary = indigoAccent, background = lightPurple, isLightForeground = true
+            ),
+
+            NoteColor(id = 8L, primary = skyBlue, background = lightBlue, isLightForeground = true),
+
+            NoteColor(
+                id = 9L, primary = tealAccent, background = lightCyan, isLightForeground = true
+            ),
+
+            NoteColor(
+                id = 10L, primary = oliveGreen, background = limePastel, isLightForeground = false
+            ),
+
+            NoteColor(
+                id = 11L, primary = skyBlue, background = babyBlue, isLightForeground = true
+            )
         )
     }
 }

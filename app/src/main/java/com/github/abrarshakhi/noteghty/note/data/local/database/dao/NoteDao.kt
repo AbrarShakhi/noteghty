@@ -5,30 +5,19 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.github.abrarshakhi.noteghty.note.data.local.database.entity.NoteColorEntity
 import com.github.abrarshakhi.noteghty.note.data.local.database.entity.NoteEntity
-import com.github.abrarshakhi.noteghty.note.data.local.database.relation.NoteWithColorRelation
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NoteDao {
     @Transaction
     @Query("SELECT * FROM notes")
-    fun getNotesWithColors(): Flow<List<NoteWithColorRelation>>
+    fun getNotes(): Flow<List<NoteEntity>>
 
     @Transaction
     @Query("SELECT * FROM notes as n WHERE n.id = :noteId")
-    suspend fun getNotesWithColorsById(noteId: Long): NoteWithColorRelation
+    suspend fun getNotesById(noteId: Long): NoteEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(noteEntity: NoteEntity): Long
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAllNoteColors(noteColorEntities: List<NoteColorEntity>)
-
-    @Query("DELETE FROM note_colors")
-    suspend fun clearAllNoteColors()
-
-    @Query("SELECT * FROM note_colors")
-    fun getNoteColors(): List<NoteColorEntity>
 }
