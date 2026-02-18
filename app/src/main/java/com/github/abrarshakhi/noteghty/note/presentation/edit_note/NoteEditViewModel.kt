@@ -9,15 +9,15 @@ import com.github.abrarshakhi.outcome.onOk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class, DelicateCoroutinesApi::class)
@@ -40,22 +40,20 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
-    private val saveMutex = Mutex()
+    private var autoSaveJob: Job? = null
 
     init {
-        startAutoSave()
+        observeAutoSave()
     }
 
-    private fun startAutoSave() {
-        viewModelScope.launch {
-            while (true) {
-                delay(1000)
-                saveMutex.withLock {
-                    useCases.saveNoteUseCase.sync(state.value.toNote()).onOk { noteId ->
+    private fun observeAutoSave() {
+        autoSaveJob = viewModelScope.launch {
+            state.debounce(1000) // wait 1 second after last change
+                .collectLatest { currentState ->
+                    useCases.saveNoteUseCase.sync(currentState.toNote()).onOk { noteId ->
                         update { copy(id = noteId) }
-                    }
+                    }.onErr {}
                 }
-            }
         }
     }
 
@@ -102,6 +100,9 @@ class NoteEditViewModel @Inject constructor(
     }
 
     private fun saveAsynchronously() {
-        viewModelScope.launch { useCases.saveNoteUseCase.async(state.value.toNote()) }
+        viewModelScope.launch {
+            autoSaveJob?.cancel()
+            useCases.saveNoteUseCase.async(state.value.toNote())
+        }
     }
 }
