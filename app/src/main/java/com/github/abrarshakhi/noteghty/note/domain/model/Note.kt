@@ -9,7 +9,6 @@ data class Note(
 
     val color: NoteColor,
     val isPinned: Boolean = false,
-    val isDeleted: Boolean = false,
 
     val updatedAt: Instant,
 ) {
@@ -25,7 +24,6 @@ data class Note(
             content: String,
             color: NoteColor,
             isPinned: Boolean = false,
-            isDeleted: Boolean = false,
         ): Note {
             return Note(
                 id = id,
@@ -33,7 +31,6 @@ data class Note(
                 content = content,
                 color = color,
                 isPinned = isPinned,
-                isDeleted = isDeleted,
                 updatedAt = Instant.now(),
             )
         }

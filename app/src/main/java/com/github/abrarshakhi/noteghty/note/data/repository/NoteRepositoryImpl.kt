@@ -5,9 +5,8 @@ import com.github.abrarshakhi.noteghty.core.domain.utils.Outcome
 import com.github.abrarshakhi.noteghty.core.domain.utils.map
 import com.github.abrarshakhi.noteghty.note.data.local.database.dao.NoteDao
 import com.github.abrarshakhi.noteghty.note.data.mapper.toDomain
-import com.github.abrarshakhi.noteghty.note.data.mapper.toRelation
+import com.github.abrarshakhi.noteghty.note.data.mapper.toEntity
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
-import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 import com.github.abrarshakhi.noteghty.note.domain.repository.NoteRepository
 import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
 import kotlinx.coroutines.CoroutineScope
@@ -24,26 +23,15 @@ class NoteRepositoryImpl @Inject constructor(
     @param:AppModule.CoroutineScopeModule.ApplicationScope private val applicationScope: CoroutineScope
 ) : NoteRepository {
 
-    @Volatile
-    private var cachedColors: List<NoteColor> = emptyList()
-
-    init {
-        applicationScope.launch {
-            cachedColors = noteDao.getNoteColors().map { it.toDomain() }
-        }
-    }
-
-    override fun getNoteColors(): List<NoteColor> = cachedColors
-
     override fun getNotes(): Flow<List<Note>> {
-        return noteDao.getNotesWithColors().mapLatest { list ->
-            list.map { noteWithColor -> noteWithColor.toDomain() }
+        return noteDao.getNotes().mapLatest { list ->
+            list.map { note -> note.toDomain() }
         }
     }
 
     override suspend fun getNoteById(noteId: Long): Outcome<Note, NoteError> {
         return try {
-            Outcome.ok(noteDao.getNotesWithColorsById(noteId)).map { it.toDomain() }
+            Outcome.ok(noteDao.getNoteById(noteId)).map { it.toDomain() }
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
@@ -52,9 +40,8 @@ class NoteRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveNote(note: Note): Outcome<Long, NoteError> {
-        val (note, _) = note.toRelation()
         return try {
-            Outcome.ok(noteDao.insertNote(note))
+            Outcome.ok(noteDao.insertNote(note.toEntity()))
         } catch (e: CancellationException) {
             throw e
         } catch (_: Exception) {
@@ -64,8 +51,7 @@ class NoteRepositoryImpl @Inject constructor(
 
     override suspend fun saveNoteAsync(note: Note) {
         applicationScope.launch {
-            val (note, _) = note.toRelation()
-            noteDao.insertNote(note)
+            noteDao.insertNote(note.toEntity())
         }
     }
 }
