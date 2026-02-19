@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -23,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
@@ -43,13 +43,15 @@ fun NoteEditScreen(
     onIntent: (NoteEditIntent) -> Unit,
     onBack: () -> Unit,
 ) {
-
+    val foregroundColor = if (state.color.isLightForeground) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        MaterialTheme.colorScheme.onPrimary
+    }
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
 
     val scrollState = rememberScrollState()
-    rememberCoroutineScope()
-
 
     // Load note if needed
     LaunchedEffect(noteId) {
@@ -73,17 +75,18 @@ fun NoteEditScreen(
         onBack()
     }
 
-
-    Scaffold(
-        topBar = {
-        NoteEditorTopBar(state = state, onBackPress = {
-            onIntent(NoteEditIntent.SaveAsynchronous)
-            onBack()
-        }, onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) })
-    },
-        snackbarHost = { SnackbarHost(snackbarHostState) },
-        modifier = Modifier.fillMaxSize().navigationBarsPadding()
-    ) { paddingValues ->
+    Scaffold(modifier = Modifier.fillMaxSize().navigationBarsPadding().imePadding(), topBar = {
+        NoteEditorTopBar(
+            isPinned = state.isPinned,
+            noteColor = state.color,
+            listOfColors = state.listOfColors,
+            onBackPress = {
+                onIntent(NoteEditIntent.SaveAsynchronous)
+                onBack()
+            },
+            onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) },
+            onNoteColorChange = { onIntent(NoteEditIntent.Set.Color(it.id)) })
+    }, snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
 
         Column(
             modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(paddingValues)
@@ -97,20 +100,16 @@ fun NoteEditScreen(
                 value = state.title,
                 onValueChange = { onIntent(NoteEditIntent.Set.Title(it)) },
                 modifier = Modifier.fillMaxWidth().padding(8.dp),
-                textStyle = MaterialTheme.typography.headlineSmall.copy(
-                    color = MaterialTheme.colorScheme.onBackground
-                ),
+                textStyle = MaterialTheme.typography.headlineSmall.copy(color = foregroundColor),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                keyboardActions = KeyboardActions(onNext = {
-                    focusManager.moveFocus(FocusDirection.Down)
-                }),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 decorationBox = { inner ->
                     if (state.title.isEmpty()) {
                         Text(
                             text = "Title",
                             style = MaterialTheme.typography.headlineSmall,
-                            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                            color = foregroundColor.copy(alpha = 0.4f)
                         )
                     }
                     inner()
@@ -118,16 +117,13 @@ fun NoteEditScreen(
 
             // Content
             Box(
-                modifier = Modifier.fillMaxSize().weight(1f) // fills remaining space
-                    .padding(horizontal = 8.dp)
+                modifier = Modifier.fillMaxSize().weight(1f).padding(horizontal = 8.dp)
             ) {
                 BasicTextField(
                     value = state.content,
                     onValueChange = { onIntent(NoteEditIntent.Set.Content(it)) },
                     modifier = Modifier.fillMaxSize().padding(top = 8.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(
-                        color = MaterialTheme.colorScheme.onBackground
-                    ),
+                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = foregroundColor),
                     keyboardOptions = KeyboardOptions.Default,
                     keyboardActions = KeyboardActions.Default,
                     decorationBox = { inner ->
@@ -135,7 +131,7 @@ fun NoteEditScreen(
                             Text(
                                 text = "Start writing...",
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.4f)
+                                color = foregroundColor.copy(alpha = 0.4f)
                             )
                         }
                         inner()

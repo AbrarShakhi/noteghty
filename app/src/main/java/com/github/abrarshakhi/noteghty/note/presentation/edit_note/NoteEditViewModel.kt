@@ -59,7 +59,9 @@ class NoteEditViewModel @Inject constructor(
         autoSaveJob?.cancel()
         autoSaveJob = viewModelScope.launch {
             state.drop(1).distinctUntilChanged().debounce(500).collect { currentState ->
-                useCases.saveNoteUseCase.sync(currentState.toNote()).onOk {}.onErr {}
+                useCases.saveNoteUseCase.sync(currentState.toNote()).onOk { noteId ->
+                    update { copy(id = noteId) }
+                }.onErr {}
             }
         }
     }
@@ -73,7 +75,7 @@ class NoteEditViewModel @Inject constructor(
         viewModelScope.launch {
             useCases.getNoteByIdUseCase(noteId).onOk { note ->
                 update { fromNote(note) }
-            }.onErr { e ->
+            }.onErr {
                 _effect.emit(NoteEditEffect.Error("Not Not Found"))
                 update { stopLoading() }
             }
