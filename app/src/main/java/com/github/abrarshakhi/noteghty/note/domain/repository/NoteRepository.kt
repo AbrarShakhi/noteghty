@@ -1,8 +1,8 @@
 package com.github.abrarshakhi.noteghty.note.domain.repository
 
-import com.github.abrarshakhi.noteghty.core.domain.utils.Outcome
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
+import com.github.abrarshakhi.outcome.Outcome
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
