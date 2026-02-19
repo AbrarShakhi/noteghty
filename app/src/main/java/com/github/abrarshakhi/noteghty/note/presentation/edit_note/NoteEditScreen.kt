@@ -37,7 +37,7 @@ import kotlinx.coroutines.flow.Flow
 @Composable
 fun NoteEditScreen(
     noteId: Long?,
-    colorId: Long?,
+    colorId: Int?,
     state: NoteEditState,
     effect: Flow<NoteEditEffect>,
     onIntent: (NoteEditIntent) -> Unit,
@@ -60,7 +60,7 @@ fun NoteEditScreen(
     LaunchedEffect(colorId) { colorId?.let { onIntent(NoteEditIntent.Set.Color(it)) } }
 
     LaunchedEffect(Unit) {
-        effect.collect { it ->
+        effect.collect {
             when (it) {
                 is NoteEditEffect.Error -> snackbarHostState.showSnackbar(it.message)
                 is NoteEditEffect.SavedSuccessfulAndReadyToGoBack -> onBack()
@@ -82,16 +82,11 @@ fun NoteEditScreen(
         }, onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) })
     },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
+        modifier = Modifier.fillMaxSize().navigationBarsPadding()
     ) { paddingValues ->
 
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(paddingValues)
+            modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(paddingValues)
                 .background(state.color.background)
         ) {
             if (state.isLoading) {
@@ -101,9 +96,7 @@ fun NoteEditScreen(
             BasicTextField(
                 value = state.title,
                 onValueChange = { onIntent(NoteEditIntent.Set.Title(it)) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
                 textStyle = MaterialTheme.typography.headlineSmall.copy(
                     color = MaterialTheme.colorScheme.onBackground
                 ),
@@ -125,17 +118,13 @@ fun NoteEditScreen(
 
             // Content
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1f) // fills remaining space
+                modifier = Modifier.fillMaxSize().weight(1f) // fills remaining space
                     .padding(horizontal = 8.dp)
             ) {
                 BasicTextField(
                     value = state.content,
                     onValueChange = { onIntent(NoteEditIntent.Set.Content(it)) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxSize().padding(top = 8.dp),
                     textStyle = MaterialTheme.typography.bodyLarge.copy(
                         color = MaterialTheme.colorScheme.onBackground
                     ),

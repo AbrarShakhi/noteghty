@@ -16,8 +16,6 @@ data class NoteEditState(
     val isDeleted: Boolean = false,
     val listOfColors: List<NoteColor> = emptyList(),
 ) {
-    fun populateColors(listOfColors: List<NoteColor>) = copy(listOfColors = listOfColors)
-
     fun startLoading(): NoteEditState = if (!isLoading) copy(isLoading = true) else this
 
     fun stopLoading(): NoteEditState = if (isLoading) copy(isLoading = false) else this
@@ -33,7 +31,6 @@ data class NoteEditState(
             content = note.content,
             color = note.color,
             isPinned = note.isPinned,
-            isDeleted = note.isDeleted,
         )
     }
 
@@ -44,7 +41,6 @@ data class NoteEditState(
             content = content,
             color = color,
             isPinned = isPinned,
-            isDeleted = isDeleted
         )
     }
 }

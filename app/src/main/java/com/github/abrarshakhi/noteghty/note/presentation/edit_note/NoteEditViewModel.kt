@@ -2,21 +2,23 @@ package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.github.abrarshakhi.noteghty.core.domain.utils.onErr
-import com.github.abrarshakhi.noteghty.core.domain.utils.onOk
+import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
+import com.github.abrarshakhi.outcome.onErr
+import com.github.abrarshakhi.outcome.onOk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @OptIn(FlowPreview::class, DelicateCoroutinesApi::class)
@@ -39,22 +41,10 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
-    private val saveMutex = Mutex()
+    private var autoSaveJob: Job? = null
 
     init {
-        update { populateColors(useCases.getNoteColorsUseCase()) }
-        startAutoSave()
-    }
-
-    private fun startAutoSave() {
-        viewModelScope.launch {
-            while (true) {
-                delay(1000)
-                saveMutex.withLock {
-                    useCases.saveNoteUseCase.sync(state.value.toNote())
-                }
-            }
-        }
+        autoSave()
     }
 
     fun onIntent(intent: NoteEditIntent) {
@@ -62,6 +52,15 @@ class NoteEditViewModel @Inject constructor(
             is NoteEditIntent.Load -> loadNote(intent.noteId)
             is NoteEditIntent.Set -> setNewState(intent)
             is NoteEditIntent.SaveAsynchronous -> saveAsynchronously()
+        }
+    }
+
+    private fun autoSave() {
+        autoSaveJob?.cancel()
+        autoSaveJob = viewModelScope.launch {
+            state.drop(1).distinctUntilChanged().debounce(500).collect { currentState ->
+                useCases.saveNoteUseCase.sync(currentState.toNote()).onOk {}.onErr {}
+            }
         }
     }
 
@@ -93,14 +92,14 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
-    private fun setColorFromId(colorId: Long) {
-        val listOfColors = state.value.listOfColors
-        listOfColors.find { it.id == colorId }?.let { color ->
-            update { copy(color = color) }
-        }
+    private fun setColorFromId(colorId: Int) {
+        update { copy(color = NoteColor.listOfColors[colorId]) }
     }
 
     private fun saveAsynchronously() {
-        viewModelScope.launch { useCases.saveNoteUseCase.async(state.value.toNote()) }
+        viewModelScope.launch {
+            autoSaveJob?.cancel()
+            useCases.saveNoteUseCase.async(state.value.toNote())
+        }
     }
 }

@@ -8,7 +8,7 @@ sealed interface NoteEditIntent {
         data class Title(val newTitle: String) : Set
         data class Content(val newContent: String) : Set
         data class TogglePinned(val pinned: Boolean) : Set
-        data class Color(val colorId: Long): Set
+        data class Color(val colorId: Int): Set
     }
 
 }
