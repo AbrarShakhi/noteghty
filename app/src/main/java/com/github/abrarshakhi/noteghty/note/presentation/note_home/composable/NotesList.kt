@@ -15,9 +15,9 @@ fun NotesList(
     notes: List<Note>,
     padding: PaddingValues,
     contentPadding: PaddingValues = PaddingValues(
-        start = 12.dp, end = 12.dp, top = 12.dp, bottom = 200.dp
+        start = 10.dp, end = 10.dp, top = 10.dp, bottom = 200.dp
     ),
-    arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(12.dp),
+    arrangement: Arrangement.HorizontalOrVertical = Arrangement.spacedBy(10.dp),
     noteItem: @Composable (Note) -> Unit
 ) {
     when (noteViewStyle) {

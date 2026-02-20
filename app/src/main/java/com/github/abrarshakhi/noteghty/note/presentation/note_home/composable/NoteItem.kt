@@ -16,13 +16,21 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
 import com.github.abrarshakhi.noteghty.core.domain.utils.toDayMonth
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 
 @Composable
-fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Note?) -> Unit) {
+fun NoteItem(
+    note: Note,
+    modifier: Modifier = Modifier,
+    onClick: (Note) -> Unit,
+    onLongClick: (Note) -> Unit
+) {
     val foregroundColor = if (note.color.isLightForeground) {
         MaterialTheme.colorScheme.onSurface
     } else {
@@ -30,21 +38,20 @@ fun NoteItem(note: Note, modifier: Modifier = Modifier, onClick: (Note?) -> Unit
     }
 
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .combinedClickable(enabled = true, onClick = {
+        modifier = modifier.fillMaxWidth().combinedClickable(enabled = true, onClick = {
                 onClick(note)
             }, onLongClick = {}),
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
             containerColor = note.color.background
         )
     ) {
-        Column(modifier = Modifier.padding(14.dp)) {
+        Column(modifier = Modifier.padding(10.dp)) {
             Text(
                 text = note.title,
                 style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
                 color = foregroundColor,
             )
             Spacer(modifier.padding(top = 4.dp))

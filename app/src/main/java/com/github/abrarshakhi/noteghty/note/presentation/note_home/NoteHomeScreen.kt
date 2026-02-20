@@ -50,7 +50,7 @@ fun NoteHomeScreen(
     var showSortSheet by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        effect.collect { it ->
+        effect.collect {
             when (it) {
                 is NoteHomeEffect.Error -> snackBarHostState.showSnackbar(it.message)
             }
@@ -63,12 +63,9 @@ fun NoteHomeScreen(
                 Image(
                     painter = painterResource(id = R.drawable.noteghty),
                     contentDescription = "App Logo",
-                    modifier = Modifier
-                        .width(36.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
-                        )
-                        .padding(5.dp)
+                    modifier = Modifier.width(36.dp).background(
+                        color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
+                    ).padding(5.dp)
                 )
             }
         }, actions = {
@@ -103,9 +100,7 @@ fun NoteHomeScreen(
 
         if (state.isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
+                modifier = Modifier.padding(padding).fillMaxWidth()
             )
         }
 
@@ -113,7 +108,7 @@ fun NoteHomeScreen(
             EmptyNotesList(padding = padding, onNewNote = { onEditNoteNavigation(null) })
         } else {
             NotesList(state.viewStyle, state.notes, padding) { note ->
-                NoteItem(note = note, onClick = onEditNoteNavigation)
+                NoteItem(note = note, onClick = { onEditNoteNavigation(it) }, onLongClick = {})
             }
         }
     }

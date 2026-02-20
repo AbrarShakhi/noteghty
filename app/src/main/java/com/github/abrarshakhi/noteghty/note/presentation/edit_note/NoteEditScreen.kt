@@ -14,7 +14,9 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -114,15 +116,12 @@ fun NoteEditScreen(
                     }
                     inner()
                 })
-
-            // Content
-            Box(
-                modifier = Modifier.fillMaxSize().weight(1f).padding(horizontal = 8.dp)
-            ) {
+            HorizontalDivider(Modifier.padding(10.dp), DividerDefaults.Thickness, foregroundColor)
+            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                 BasicTextField(
                     value = state.content,
                     onValueChange = { onIntent(NoteEditIntent.Set.Content(it)) },
-                    modifier = Modifier.fillMaxSize().padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
                     textStyle = MaterialTheme.typography.bodyLarge.copy(color = foregroundColor),
                     keyboardOptions = KeyboardOptions.Default,
                     keyboardActions = KeyboardActions.Default,
