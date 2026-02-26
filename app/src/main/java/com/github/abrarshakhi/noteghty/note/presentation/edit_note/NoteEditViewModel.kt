@@ -33,6 +33,8 @@ class NoteEditViewModel @Inject constructor(
     private val _state = MutableStateFlow(NoteEditState())
     val state = _state.asStateFlow()
 
+    private var isUpdated = false
+
     private inline fun update(reducer: NoteEditState.() -> NoteEditState) {
         val current = state.value
         val updated = current.reducer()
@@ -83,6 +85,7 @@ class NoteEditViewModel @Inject constructor(
     }
 
     private fun setNewState(changeIntent: NoteEditIntent.Set) {
+        isUpdated = true
         when (changeIntent) {
             is NoteEditIntent.Set.Content -> update { copy(content = changeIntent.newContent) }
 
@@ -101,7 +104,9 @@ class NoteEditViewModel @Inject constructor(
     private fun saveAsynchronously() {
         viewModelScope.launch {
             autoSaveJob?.cancel()
-            useCases.saveNoteUseCase.async(state.value.toNote())
+            if (isUpdated) {
+                useCases.saveNoteUseCase.async(state.value.toNote())
+            }
         }
     }
 }
