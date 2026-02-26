@@ -2,6 +2,7 @@ package com.github.abrarshakhi.noteghty.note.presentation.edit_note
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteEditUseCases
 import com.github.abrarshakhi.outcome.onErr
@@ -10,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -43,10 +45,11 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
+    private val saveQueue = Channel<Note>(capacity = Channel.CONFLATED)
     private var autoSaveJob: Job? = null
 
     init {
-        autoSave()
+        startAutoSaveWorker()
     }
 
     fun onIntent(intent: NoteEditIntent) {
@@ -57,13 +60,13 @@ class NoteEditViewModel @Inject constructor(
         }
     }
 
-    private fun autoSave() {
+    private fun startAutoSaveWorker() {
         autoSaveJob?.cancel()
         autoSaveJob = viewModelScope.launch {
-            state.drop(1).distinctUntilChanged().debounce(500).collect { currentState ->
-                useCases.saveNoteUseCase.sync(currentState.toNote()).onOk { noteId ->
-                    update { copy(id = noteId) }
-                }.onErr {}
+            for (note in saveQueue) {
+                useCases.saveNoteUseCase.sync(note)
+                    .onOk { noteId -> update { copy(id = noteId) } }
+                    .onErr { }
             }
         }
     }
@@ -95,6 +98,11 @@ class NoteEditViewModel @Inject constructor(
 
             is NoteEditIntent.Set.Color -> setColorFromId(changeIntent.colorId)
         }
+        enqueueSave()
+    }
+
+    private fun enqueueSave() {
+        viewModelScope.launch { saveQueue.send(state.value.toNote()) }
     }
 
     private fun setColorFromId(colorId: Int) {

@@ -73,12 +73,9 @@ fun NoteHomeScreen(
                 Image(
                     painter = painterResource(id = R.drawable.noteghty),
                     contentDescription = "App Logo",
-                    modifier = Modifier
-                        .width(36.dp)
-                        .background(
+                    modifier = Modifier.width(36.dp).background(
                             color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
-                        )
-                        .padding(5.dp)
+                        ).padding(5.dp)
                 )
             }
         }, actions = {
@@ -113,9 +110,7 @@ fun NoteHomeScreen(
 
         if (state.isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier
-                    .padding(padding)
-                    .fillMaxWidth()
+                modifier = Modifier.padding(padding).fillMaxWidth()
             )
         }
 
@@ -141,10 +136,10 @@ fun NoteHomeScreen(
                 bottomSheetState = BottomSheetState.Dismissed
             })
 
-        is BottomSheetState.Delete -> DeleteNoteBottomSheet(
-            note = sheetState.note,
-            onDelete = { onIntent(NoteHomeIntent.DeleteNote(sheetState.note)) },
-            onDismiss = { bottomSheetState = BottomSheetState.Dismissed })
+        is BottomSheetState.Delete -> DeleteNoteBottomSheet(note = sheetState.note, onDelete = {
+            onIntent(NoteHomeIntent.DeleteNote(sheetState.note))
+            bottomSheetState = BottomSheetState.Dismissed
+        }, onDismiss = { bottomSheetState = BottomSheetState.Dismissed })
 
         is BottomSheetState.Dismissed -> Unit
     }

@@ -40,7 +40,7 @@ fun NoteItem(
     Card(
         modifier = modifier.fillMaxWidth().combinedClickable(enabled = true, onClick = {
                 onClick(note)
-            }, onLongClick = {}),
+            }, onLongClick = {onLongClick(note)}),
         shape = RoundedCornerShape(5.dp),
         elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
         colors = CardDefaults.cardColors(
