@@ -32,11 +32,21 @@ import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteViewStyle
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeIntent.LoadNotes
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeIntent.SetNoteOrderingSettings
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.NoteHomeIntent.ToggleViewStyle
+import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.DeleteNoteBottomSheet
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.EmptyNotesList
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NoteItem
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NoteOrderBottomSheet
 import com.github.abrarshakhi.noteghty.note.presentation.note_home.composable.NotesList
 import kotlinx.coroutines.flow.Flow
+
+private sealed interface BottomSheetState {
+    object Sort : BottomSheetState
+    data class Delete(val note: Note) : BottomSheetState
+    object Dismissed : BottomSheetState
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -47,7 +57,7 @@ fun NoteHomeScreen(
     onEditNoteNavigation: (Note?) -> Unit,
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
-    var showSortSheet by remember { mutableStateOf(false) }
+    var bottomSheetState by remember { mutableStateOf<BottomSheetState>(BottomSheetState.Dismissed) }
 
     LaunchedEffect(Unit) {
         effect.collect {
@@ -63,20 +73,23 @@ fun NoteHomeScreen(
                 Image(
                     painter = painterResource(id = R.drawable.noteghty),
                     contentDescription = "App Logo",
-                    modifier = Modifier.width(36.dp).background(
-                        color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
-                    ).padding(5.dp)
+                    modifier = Modifier
+                        .width(36.dp)
+                        .background(
+                            color = MaterialTheme.colorScheme.surfaceVariant, shape = CircleShape
+                        )
+                        .padding(5.dp)
                 )
             }
         }, actions = {
-            IconButton(onClick = { showSortSheet = true }) {
+            IconButton(onClick = { bottomSheetState = BottomSheetState.Sort }) {
                 Icon(
                     painter = painterResource(R.drawable.outline_swap_vert_24),
                     contentDescription = "Order"
                 )
             }
 
-            IconButton(onClick = { onIntent(NoteHomeIntent.ToggleViewStyle) }) {
+            IconButton(onClick = { onIntent(ToggleViewStyle) }) {
                 Icon(
                     painter = painterResource(
                         when (state.viewStyle) {
@@ -100,7 +113,9 @@ fun NoteHomeScreen(
 
         if (state.isLoading) {
             LinearProgressIndicator(
-                modifier = Modifier.padding(padding).fillMaxWidth()
+                modifier = Modifier
+                    .padding(padding)
+                    .fillMaxWidth()
             )
         }
 
@@ -108,20 +123,32 @@ fun NoteHomeScreen(
             EmptyNotesList(padding = padding, onNewNote = { onEditNoteNavigation(null) })
         } else {
             NotesList(state.viewStyle, state.notes, padding) { note ->
-                NoteItem(note = note, onClick = { onEditNoteNavigation(it) }, onLongClick = {})
+                NoteItem(
+                    note = note,
+                    onClick = { onEditNoteNavigation(it) },
+                    onLongClick = { bottomSheetState = BottomSheetState.Delete(it) })
             }
         }
     }
 
-    if (showSortSheet) {
-        NoteOrderBottomSheet(
+    when (val sheetState = bottomSheetState) {
+        is BottomSheetState.Sort -> NoteOrderBottomSheet(
             currentOrder = state.noteOrder,
-            onDismiss = { showSortSheet = false },
+            onDismiss = { bottomSheetState = BottomSheetState.Dismissed },
             onSave = { order ->
-                onIntent(NoteHomeIntent.SetNoteOrderingSettings(order))
-                onIntent(NoteHomeIntent.LoadNotes)
-                showSortSheet = false
+                onIntent(SetNoteOrderingSettings(order))
+                onIntent(LoadNotes)
+                bottomSheetState = BottomSheetState.Dismissed
             })
+
+        is BottomSheetState.Delete -> DeleteNoteBottomSheet(
+            note = sheetState.note,
+            onDelete = { onIntent(NoteHomeIntent.DeleteNote(sheetState.note)) },
+            onDismiss = { bottomSheetState = BottomSheetState.Dismissed })
+
+        is BottomSheetState.Dismissed -> Unit
     }
 }
+
+
 

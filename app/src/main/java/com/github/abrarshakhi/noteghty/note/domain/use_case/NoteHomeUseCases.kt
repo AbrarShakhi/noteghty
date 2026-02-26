@@ -5,4 +5,5 @@ import javax.inject.Inject
 
 class NoteHomeUseCases @Inject constructor(private val repo: NoteRepository) {
     val getNotesUseCase: GetNotesUseCase = GetNotesUseCase(repo)
+    val deleteNotesUseCase: DeleteNotesUseCase = DeleteNotesUseCase(repo)
 }

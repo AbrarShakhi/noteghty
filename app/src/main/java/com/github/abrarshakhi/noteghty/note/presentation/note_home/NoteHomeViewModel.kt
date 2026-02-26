@@ -6,7 +6,9 @@ import androidx.lifecycle.viewModelScope
 import com.github.abrarshakhi.noteghty.note.data.local.preference.setNoteListingOrder
 import com.github.abrarshakhi.noteghty.note.data.local.preference.setNoteViewStyle
 import com.github.abrarshakhi.noteghty.note.domain.listing.NoteOrder
+import com.github.abrarshakhi.noteghty.note.domain.model.Note
 import com.github.abrarshakhi.noteghty.note.domain.use_case.NoteHomeUseCases
+import com.github.abrarshakhi.outcome.onOk
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteHomeViewModel @Inject constructor(
-    private val prefs: SharedPreferences, private val useCases: NoteHomeUseCases
+    private val prefs: SharedPreferences, private val useCases: NoteHomeUseCases,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NoteHomeState())
@@ -40,6 +42,13 @@ class NoteHomeViewModel @Inject constructor(
             is NoteHomeIntent.ToggleViewStyle -> toggleViewStyle()
             is NoteHomeIntent.SetNoteOrderingSettings -> setNoteOrderingSettings(intent.noteOrder)
             is NoteHomeIntent.LoadNotes -> loadNotes()
+            is NoteHomeIntent.DeleteNote -> deleteNote(intent.note)
+        }
+    }
+
+    private fun deleteNote(note: Note) {
+        note.id?.let {
+            viewModelScope.launch { useCases.deleteNotesUseCase(it).onOk { loadNotes() } }
         }
     }
 
