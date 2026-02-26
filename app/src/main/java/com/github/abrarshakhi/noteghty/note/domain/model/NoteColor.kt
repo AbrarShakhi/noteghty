@@ -47,31 +47,31 @@ data class NoteColor(
                 id = 3, primary = warmBrown, background = lightCream, isLightForeground = false
             ),
 
-            NoteColor(id = 4, primary = softRed, background = lightRed, isLightForeground = true),
+            NoteColor(id = 4, primary = softRed, background = lightRed, isLightForeground = false),
 
             NoteColor(
-                id = 5, primary = dustyPink, background = softPink, isLightForeground = true
+                id = 5, primary = dustyPink, background = softPink, isLightForeground = false
             ),
 
             NoteColor(
-                id = 6, primary = purpleAccent, background = lavender, isLightForeground = true
+                id = 6, primary = purpleAccent, background = lavender, isLightForeground = false
             ),
 
             NoteColor(
-                id = 7, primary = indigoAccent, background = lightPurple, isLightForeground = true
+                id = 7, primary = indigoAccent, background = lightPurple, isLightForeground = false
             ),
 
-            NoteColor(id = 8, primary = skyBlue, background = lightBlue, isLightForeground = true),
+            NoteColor(id = 8, primary = skyBlue, background = lightBlue, isLightForeground = false),
 
             NoteColor(
-                id = 9, primary = tealAccent, background = lightCyan, isLightForeground = true
+                id = 9, primary = tealAccent, background = lightCyan, isLightForeground = false
             ),
 
             NoteColor(
                 id = 10, primary = oliveGreen, background = limePastel, isLightForeground = false
             ),
 
-            NoteColor(id = 11, primary = skyBlue, background = babyBlue, isLightForeground = true)
+            NoteColor(id = 11, primary = skyBlue, background = babyBlue, isLightForeground = false)
         )
     }
 }

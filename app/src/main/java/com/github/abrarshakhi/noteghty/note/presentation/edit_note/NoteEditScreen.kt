@@ -31,6 +31,8 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.github.abrarshakhi.noteghty.core.ui.theme.onPrimaryLight
+import com.github.abrarshakhi.noteghty.core.ui.theme.onSurfaceLight
 import com.github.abrarshakhi.noteghty.note.presentation.edit_note.composable.NoteEditorTopBar
 import kotlinx.coroutines.flow.Flow
 
@@ -45,11 +47,8 @@ fun NoteEditScreen(
     onIntent: (NoteEditIntent) -> Unit,
     onBack: () -> Unit,
 ) {
-    val foregroundColor = if (state.color.isLightForeground) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.onPrimary
-    }
+    val foregroundColor = if (state.color.isLightForeground) onPrimaryLight else onSurfaceLight
+
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
 

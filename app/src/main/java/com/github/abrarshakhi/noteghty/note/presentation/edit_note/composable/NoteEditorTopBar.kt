@@ -14,7 +14,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconToggleButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -27,6 +26,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
+import com.github.abrarshakhi.noteghty.core.ui.theme.onPrimaryDark
+import com.github.abrarshakhi.noteghty.core.ui.theme.onPrimaryLight
 import com.github.abrarshakhi.noteghty.note.domain.model.NoteColor
 
 
@@ -40,6 +41,8 @@ fun NoteEditorTopBar(
     onPinnedChange: (Boolean) -> Unit,
     onNoteColorChange: (NoteColor) -> Unit
 ) {
+    val foregroundColor = if (noteColor.isLightForeground) onPrimaryLight else onPrimaryDark
+
     var showTheme by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         navigationIcon = {
@@ -49,7 +52,8 @@ fun NoteEditorTopBar(
         } else onBackPress) {
             Icon(
                 painter = painterResource(R.drawable.outline_arrow_back_24),
-                contentDescription = "Back"
+                contentDescription = "Back",
+                tint = foregroundColor
             )
         }
     }, title = {}, actions = {
@@ -57,13 +61,16 @@ fun NoteEditorTopBar(
             ThemeActions(
                 listOfColors = listOfColors,
                 selectedColorId = noteColor.id,
-                onNoteColorChange = onNoteColorChange
+                onNoteColorChange = onNoteColorChange,
+                isLightForeground = noteColor.isLightForeground
             )
         } else {
             DefaultActions(
                 isPinned = isPinned,
                 onPinnedChange = onPinnedChange,
-                onShowThemeChange = { showTheme = true })
+                onShowThemeChange = { showTheme = true },
+                foregroundColor = foregroundColor
+            )
         }
     }, colors = TopAppBarDefaults.topAppBarColors(
         containerColor = noteColor.background,
@@ -77,7 +84,10 @@ fun NoteEditorTopBar(
 
 @Composable
 fun ThemeActions(
-    listOfColors: List<NoteColor>, selectedColorId: Int, onNoteColorChange: (NoteColor) -> Unit
+    listOfColors: List<NoteColor>,
+    selectedColorId: Int,
+    onNoteColorChange: (NoteColor) -> Unit,
+    isLightForeground: Boolean
 ) {
     LazyRow(modifier = Modifier.padding(start = 50.dp)) {
         items(listOfColors, key = { it.id }) { color ->
@@ -86,7 +96,7 @@ fun ThemeActions(
                 modifier = Modifier.padding(horizontal = 6.dp).size(36.dp).clip(CircleShape)
                     .background(color.background).border(
                         width = if (isSelected) 3.dp else 0.dp,
-                        color = if (isSelected) MaterialTheme.colorScheme.primary
+                        color = if (isSelected) if (isLightForeground) onPrimaryLight else onPrimaryDark
                         else Color.Transparent,
                         shape = CircleShape
                     ).clickable { onNoteColorChange(color) })
@@ -96,7 +106,10 @@ fun ThemeActions(
 
 @Composable
 fun DefaultActions(
-    isPinned: Boolean, onPinnedChange: (Boolean) -> Unit, onShowThemeChange: () -> Unit
+    isPinned: Boolean,
+    onPinnedChange: (Boolean) -> Unit,
+    onShowThemeChange: () -> Unit,
+    foregroundColor: Color
 ) {
     IconToggleButton(
         checked = isPinned, onCheckedChange = onPinnedChange
@@ -105,22 +118,21 @@ fun DefaultActions(
             painter = painterResource(
                 if (isPinned) R.drawable.outline_keep_off_24
                 else R.drawable.outline_keep_24
-            ),
-            contentDescription = "Pin note",
-            tint = if (isPinned) MaterialTheme.colorScheme.primary
-            else MaterialTheme.colorScheme.onSurface
+            ), contentDescription = "Pin note", tint = foregroundColor
         )
     }
     IconButton(onClick = onShowThemeChange) {
         Icon(
             painter = painterResource(R.drawable.outline_palette_24),
-            contentDescription = "Change color"
+            contentDescription = "Change color",
+            tint = foregroundColor
         )
     }
     IconButton(onClick = {}) {
         Icon(
             painter = painterResource(R.drawable.outline_more_vert_24),
-            contentDescription = "More options"
+            contentDescription = "More options",
+            tint = foregroundColor
         )
     }
 }

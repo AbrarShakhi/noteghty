@@ -22,6 +22,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.github.abrarshakhi.noteghty.R
 import com.github.abrarshakhi.noteghty.core.domain.utils.toDayMonth
+import com.github.abrarshakhi.noteghty.core.ui.theme.onPrimaryLight
+import com.github.abrarshakhi.noteghty.core.ui.theme.onSurfaceLight
+import com.github.abrarshakhi.noteghty.core.ui.theme.scrimLight
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
 
 @Composable
@@ -31,11 +34,7 @@ fun NoteItem(
     onClick: (Note) -> Unit,
     onLongClick: (Note) -> Unit
 ) {
-    val foregroundColor = if (note.color.isLightForeground) {
-        MaterialTheme.colorScheme.onSurface
-    } else {
-        MaterialTheme.colorScheme.onPrimary
-    }
+    val foregroundColor = if (note.color.isLightForeground) onPrimaryLight else onSurfaceLight
 
     Card(
         modifier = modifier.fillMaxWidth().combinedClickable(enabled = true, onClick = {
