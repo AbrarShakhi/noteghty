@@ -15,9 +15,12 @@ interface NoteDao {
     fun getNotes(): Flow<List<NoteEntity>>
 
     @Transaction
-    @Query("SELECT * FROM notes as n WHERE n.id = :noteId")
+    @Query("SELECT * FROM notes WHERE notes.id = :noteId")
     suspend fun getNoteById(noteId: Long): NoteEntity
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertNote(noteEntity: NoteEntity): Long
+
+    @Query("DELETE FROM notes WHERE notes.id = :noteId")
+    suspend fun deleteNoteById(noteId: Long)
 }

@@ -10,4 +10,5 @@ interface NoteRepository {
     suspend fun getNoteById(noteId: Long): Outcome<Note, NoteError>
     suspend fun saveNote(note: Note): Outcome<Long, NoteError>
     suspend fun saveNoteAsync(note: Note)
+    suspend fun deleteNote(noteId: Long): Outcome<Unit, NoteError>
 }

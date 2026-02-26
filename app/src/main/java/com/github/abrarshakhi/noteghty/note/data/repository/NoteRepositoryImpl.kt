@@ -9,6 +9,7 @@ import com.github.abrarshakhi.noteghty.note.domain.repository.NoteRepository
 import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
 import com.github.abrarshakhi.outcome.Outcome
 import com.github.abrarshakhi.outcome.map
+import com.github.abrarshakhi.outcome.mapError
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -20,7 +21,7 @@ import kotlin.coroutines.cancellation.CancellationException
 @OptIn(ExperimentalCoroutinesApi::class)
 class NoteRepositoryImpl @Inject constructor(
     private val noteDao: NoteDao,
-    @param:AppModule.CoroutineScopeModule.ApplicationScope private val applicationScope: CoroutineScope
+    @param:AppModule.CoroutineScopeModule.ApplicationScope private val applicationScope: CoroutineScope,
 ) : NoteRepository {
 
     override fun getNotes(): Flow<List<Note>> {
@@ -54,4 +55,8 @@ class NoteRepositoryImpl @Inject constructor(
             noteDao.insertNote(note.toEntity())
         }
     }
+
+    override suspend fun deleteNote(noteId: Long): Outcome<Unit, NoteError> =
+        Outcome.maybeThrows { noteDao.deleteNoteById(noteId) }.mapError { NoteError.InvalidNoteId }
+
 }
