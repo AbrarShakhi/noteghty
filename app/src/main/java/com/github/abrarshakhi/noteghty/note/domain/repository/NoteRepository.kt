@@ -1,15 +1,14 @@
 package com.github.abrarshakhi.noteghty.note.domain.repository
 
 import com.github.abrarshakhi.noteghty.note.domain.model.Note
+import com.github.abrarshakhi.noteghty.note.domain.utils.NoteError
+import com.github.abrarshakhi.outcome.Outcome
 import kotlinx.coroutines.flow.Flow
 
 interface NoteRepository {
-
     fun getNotes(): Flow<List<Note>>
-
-    suspend fun getNoteById(id: Int): Note?
-
-    suspend fun insertNote(note: Note)
-
-    suspend fun deleteNote(note: Note)
+    suspend fun getNoteById(noteId: Long): Outcome<Note, NoteError>
+    suspend fun saveNote(note: Note): Outcome<Long, NoteError>
+    suspend fun saveNoteAsync(note: Note)
+    suspend fun deleteNote(noteId: Long): Outcome<Unit, NoteError>
 }

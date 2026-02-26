@@ -1,26 +1,39 @@
 package com.github.abrarshakhi.noteghty.note.domain.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.github.abrarshakhi.noteghty.ui.theme.LavenderBlue
-import com.github.abrarshakhi.noteghty.ui.theme.LightApricot
-import com.github.abrarshakhi.noteghty.ui.theme.LightBlushPink
-import com.github.abrarshakhi.noteghty.ui.theme.MutedCoralRose
-import com.github.abrarshakhi.noteghty.ui.theme.WarmCream
+import java.time.Instant
 
-
-@Entity
 data class Note(
+    val id: Long?,
     val title: String,
     val content: String,
-    val timestamp: Long,
-    val color: Int,
-    @PrimaryKey val id: Int? = null
+
+    val color: NoteColor,
+    val isPinned: Boolean = false,
+
+    val updatedAt: Instant,
 ) {
     companion object {
-        val noteColors =
-            listOf(WarmCream, LightBlushPink, LavenderBlue, LightApricot, MutedCoralRose)
+
+        /**
+         * Factory method for creating a new Note.
+         * Keeps construction explicit and readable.
+         */
+        fun newInstance(
+            id: Long? = null,
+            title: String,
+            content: String,
+            color: NoteColor,
+            isPinned: Boolean = false,
+        ): Note {
+            return Note(
+                id = id,
+                title = title,
+                content = content,
+                color = color,
+                isPinned = isPinned,
+                updatedAt = Instant.now(),
+            )
+        }
     }
 }
 
-class InvalidNoteException(message: String) : Exception(message)

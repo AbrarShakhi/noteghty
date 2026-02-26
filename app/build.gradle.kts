@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     kotlin("kapt")
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 }
 
 android {
@@ -16,8 +17,8 @@ android {
         applicationId = "com.github.abrarshakhi.noteghty"
         minSdk = 30
         targetSdk = 36
-        versionCode = 2
-        versionName = "1.1.0"
+        versionCode = 3
+        versionName = "2.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -68,9 +69,17 @@ dependencies {
 
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.hilt.android)
+    implementation(libs.hilt.navigation.compose)
     kapt(libs.hilt.compiler)
     implementation(libs.androidx.room.ktx)
     kapt(libs.androidx.room.compiler)
     implementation(libs.androidx.compose.material.icons.extended)
-    implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.androidx.navigation3.ui)
+    implementation(libs.androidx.navigation3.runtime)
+    implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+    implementation(libs.kotlinx.serialization.core)
+
+    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc13")
+    implementation("com.github.abrarshakhi:outcome:1.0.1")
 }
