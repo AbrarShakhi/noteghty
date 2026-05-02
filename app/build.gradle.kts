@@ -80,6 +80,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.navigation3)
     implementation(libs.kotlinx.serialization.core)
 
-    implementation("com.mohamedrejeb.richeditor:richeditor-compose:1.0.0-rc13")
+    implementation("com.github.jeziellago:compose-markdown:0.7.2")
     implementation("com.github.abrarshakhi:outcome:1.0.1")
 }

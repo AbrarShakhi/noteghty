@@ -14,6 +14,7 @@ data class NoteEditState(
     val color: NoteColor = NoteColor.listOfColors.random(),
     val isPinned: Boolean = false,
     val listOfColors: List<NoteColor> = NoteColor.listOfColors,
+    val isEditMode: Boolean = true,
 ) {
     fun startLoading(): NoteEditState = if (!isLoading) copy(isLoading = true) else this
 
@@ -21,6 +22,8 @@ data class NoteEditState(
 
     fun togglePinned(newPinned: Boolean? = null): NoteEditState =
         copy(isPinned = newPinned ?: !isPinned)
+
+    fun toggleEditMode(): NoteEditState = copy(isEditMode = !isEditMode)
 
     fun fromNote(note: Note): NoteEditState {
         return copy(

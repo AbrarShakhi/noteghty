@@ -98,13 +98,11 @@ fun NoteHomeScreen(
             }
         })
     }, floatingActionButton = {
-        if (state.notes.isNotEmpty()) {
-            FloatingActionButton(onClick = { onEditNoteNavigation(null) }, shape = CircleShape) {
-                Icon(
-                    painter = painterResource(R.drawable.outline_edit_square_24),
-                    contentDescription = "add new note",
-                )
-            }
+        FloatingActionButton(onClick = { onEditNoteNavigation(null) }, shape = CircleShape) {
+            Icon(
+                painter = painterResource(R.drawable.outline_edit_square_24),
+                contentDescription = "add new note",
+            )
         }
     }, snackbarHost = { SnackbarHost(snackBarHostState) }) { padding ->
 

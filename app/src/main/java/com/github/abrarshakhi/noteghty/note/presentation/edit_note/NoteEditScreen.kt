@@ -31,9 +31,11 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.github.abrarshakhi.noteghty.core.presentation.composable.LifecycleEventsEffect
 import com.github.abrarshakhi.noteghty.core.ui.theme.onPrimaryLight
 import com.github.abrarshakhi.noteghty.core.ui.theme.onSurfaceLight
 import com.github.abrarshakhi.noteghty.note.presentation.edit_note.composable.NoteEditorTopBar
+import dev.jeziellago.compose.markdowntext.MarkdownText
 import kotlinx.coroutines.flow.Flow
 
 
@@ -51,46 +53,51 @@ fun NoteEditScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val focusManager = LocalFocusManager.current
-
     val scrollState = rememberScrollState()
 
-    // Load note if needed
     LaunchedEffect(noteId) {
-        noteId?.let {
-            onIntent(NoteEditIntent.Load(it))
-        }
+        noteId?.let { onIntent(NoteEditIntent.Load(it)) }
     }
-    LaunchedEffect(colorId) { colorId?.let { onIntent(NoteEditIntent.Set.Color(it)) } }
-
+    LaunchedEffect(colorId) {
+        colorId?.let { onIntent(NoteEditIntent.Set.Color(it)) }
+    }
     LaunchedEffect(Unit) {
-        effect.collect {
-            when (it) {
-                is NoteEditEffect.Error -> snackbarHostState.showSnackbar(it.message)
-                is NoteEditEffect.SavedSuccessfulAndReadyToGoBack -> onBack()
-            }
-        }
+        effect.collect { when (it) {
+            is NoteEditEffect.Error -> snackbarHostState.showSnackbar(it.message)
+        }}
     }
 
-    BackHandler {
-        onIntent(NoteEditIntent.SaveAsynchronous)
-        onBack()
-    }
+    // Save immediately when the user backgrounds the app.
+    LifecycleEventsEffect(onPause = { onIntent(NoteEditIntent.SaveNow) })
 
-    Scaffold(modifier = Modifier.fillMaxSize().navigationBarsPadding().imePadding(), topBar = {
-        NoteEditorTopBar(
-            isPinned = state.isPinned,
-            noteColor = state.color,
-            listOfColors = state.listOfColors,
-            onBackPress = {
-                onIntent(NoteEditIntent.SaveAsynchronous)
-                onBack()
-            },
-            onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) },
-            onNoteColorChange = { onIntent(NoteEditIntent.Set.Color(it.id)) })
-    }, snackbarHost = { SnackbarHost(snackbarHostState) }) { paddingValues ->
+    // Navigation back — onCleared() handles the final save.
+    BackHandler { onBack() }
+
+    Scaffold(
+        modifier = Modifier
+            .fillMaxSize()
+            .navigationBarsPadding()
+            .imePadding(),
+        topBar = {
+            NoteEditorTopBar(
+                isPinned = state.isPinned,
+                noteColor = state.color,
+                listOfColors = state.listOfColors,
+                isEditMode = state.isEditMode,
+                onBackPress = { onBack() },
+                onPinnedChange = { onIntent(NoteEditIntent.Set.TogglePinned(it)) },
+                onNoteColorChange = { onIntent(NoteEditIntent.Set.Color(it.id)) },
+                onToggleEditMode = { onIntent(NoteEditIntent.ToggleEditMode) }
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { paddingValues ->
 
         Column(
-            modifier = Modifier.fillMaxSize().verticalScroll(scrollState).padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(scrollState)
+                .padding(paddingValues)
                 .background(state.color.background)
         ) {
             if (state.isLoading) {
@@ -100,7 +107,9 @@ fun NoteEditScreen(
             BasicTextField(
                 value = state.title,
                 onValueChange = { onIntent(NoteEditIntent.Set.Title(it)) },
-                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp),
                 textStyle = MaterialTheme.typography.headlineSmall.copy(color = foregroundColor),
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -114,26 +123,46 @@ fun NoteEditScreen(
                         )
                     }
                     inner()
-                })
+                }
+            )
+
             HorizontalDivider(Modifier.padding(10.dp), DividerDefaults.Thickness, foregroundColor)
-            Box(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                BasicTextField(
-                    value = state.content,
-                    onValueChange = { onIntent(NoteEditIntent.Set.Content(it)) },
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    textStyle = MaterialTheme.typography.bodyLarge.copy(color = foregroundColor),
-                    keyboardOptions = KeyboardOptions.Default,
-                    keyboardActions = KeyboardActions.Default,
-                    decorationBox = { inner ->
-                        if (state.content.isEmpty()) {
-                            Text(
-                                text = "Start writing...",
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = foregroundColor.copy(alpha = 0.4f)
-                            )
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                if (state.isEditMode) {
+                    BasicTextField(
+                        value = state.content,
+                        onValueChange = { onIntent(NoteEditIntent.Set.Content(it)) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
+                        textStyle = MaterialTheme.typography.bodyLarge.copy(color = foregroundColor),
+                        keyboardOptions = KeyboardOptions.Default,
+                        keyboardActions = KeyboardActions.Default,
+                        decorationBox = { inner ->
+                            if (state.content.isEmpty()) {
+                                Text(
+                                    text = "Start writing...",
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = foregroundColor.copy(alpha = 0.4f)
+                                )
+                            }
+                            inner()
                         }
-                        inner()
-                    })
+                    )
+                } else {
+                    MarkdownText(
+                        markdown = state.content,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 8.dp),
+                        style = MaterialTheme.typography.bodyLarge.copy(color = foregroundColor),
+                    )
+                }
             }
         }
     }

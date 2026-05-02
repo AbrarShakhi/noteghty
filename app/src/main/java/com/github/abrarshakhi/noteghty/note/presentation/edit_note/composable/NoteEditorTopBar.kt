@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Visibility
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -37,48 +40,56 @@ fun NoteEditorTopBar(
     isPinned: Boolean,
     noteColor: NoteColor,
     listOfColors: List<NoteColor>,
+    isEditMode: Boolean,
     onBackPress: () -> Unit,
     onPinnedChange: (Boolean) -> Unit,
-    onNoteColorChange: (NoteColor) -> Unit
+    onNoteColorChange: (NoteColor) -> Unit,
+    onToggleEditMode: () -> Unit,
 ) {
     val foregroundColor = if (noteColor.isLightForeground) onPrimaryLight else onPrimaryDark
 
     var showTheme by remember { mutableStateOf(false) }
     CenterAlignedTopAppBar(
         navigationIcon = {
-        IconButton(
-            onClick = if (showTheme) {
-            { showTheme = false }
-        } else onBackPress) {
-            Icon(
-                painter = painterResource(R.drawable.outline_arrow_back_24),
-                contentDescription = "Back",
-                tint = foregroundColor
-            )
-        }
-    }, title = {}, actions = {
-        if (showTheme) {
-            ThemeActions(
-                listOfColors = listOfColors,
-                selectedColorId = noteColor.id,
-                onNoteColorChange = onNoteColorChange,
-                isLightForeground = noteColor.isLightForeground
-            )
-        } else {
-            DefaultActions(
-                isPinned = isPinned,
-                onPinnedChange = onPinnedChange,
-                onShowThemeChange = { showTheme = true },
-                foregroundColor = foregroundColor
-            )
-        }
-    }, colors = TopAppBarDefaults.topAppBarColors(
-        containerColor = noteColor.background,
-        scrolledContainerColor = Color.Unspecified,
-        navigationIconContentColor = Color.Unspecified,
-        titleContentColor = Color.Unspecified,
-        actionIconContentColor = Color.Unspecified
-    )
+            IconButton(
+                onClick = if (showTheme) {
+                    { showTheme = false }
+                } else onBackPress
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.outline_arrow_back_24),
+                    contentDescription = "Back",
+                    tint = foregroundColor
+                )
+            }
+        },
+        title = {},
+        actions = {
+            if (showTheme) {
+                ThemeActions(
+                    listOfColors = listOfColors,
+                    selectedColorId = noteColor.id,
+                    onNoteColorChange = onNoteColorChange,
+                    isLightForeground = noteColor.isLightForeground
+                )
+            } else {
+                DefaultActions(
+                    isPinned = isPinned,
+                    isEditMode = isEditMode,
+                    onPinnedChange = onPinnedChange,
+                    onShowThemeChange = { showTheme = true },
+                    onToggleEditMode = onToggleEditMode,
+                    foregroundColor = foregroundColor
+                )
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = noteColor.background,
+            scrolledContainerColor = Color.Unspecified,
+            navigationIconContentColor = Color.Unspecified,
+            titleContentColor = Color.Unspecified,
+            actionIconContentColor = Color.Unspecified
+        )
     )
 }
 
@@ -93,13 +104,19 @@ fun ThemeActions(
         items(listOfColors, key = { it.id }) { color ->
             val isSelected = color.id == selectedColorId
             Box(
-                modifier = Modifier.padding(horizontal = 6.dp).size(36.dp).clip(CircleShape)
-                    .background(color.background).border(
+                modifier = Modifier
+                    .padding(horizontal = 6.dp)
+                    .size(36.dp)
+                    .clip(CircleShape)
+                    .background(color.background)
+                    .border(
                         width = if (isSelected) 3.dp else 0.dp,
                         color = if (isSelected) if (isLightForeground) onPrimaryLight else onPrimaryDark
                         else Color.Transparent,
                         shape = CircleShape
-                    ).clickable { onNoteColorChange(color) })
+                    )
+                    .clickable { onNoteColorChange(color) }
+            )
         }
     }
 }
@@ -107,10 +124,19 @@ fun ThemeActions(
 @Composable
 fun DefaultActions(
     isPinned: Boolean,
+    isEditMode: Boolean,
     onPinnedChange: (Boolean) -> Unit,
     onShowThemeChange: () -> Unit,
+    onToggleEditMode: () -> Unit,
     foregroundColor: Color
 ) {
+    IconButton(onClick = onToggleEditMode) {
+        Icon(
+            imageVector = if (isEditMode) Icons.Outlined.Visibility else Icons.Outlined.Edit,
+            contentDescription = if (isEditMode) "Preview markdown" else "Edit markdown",
+            tint = foregroundColor
+        )
+    }
     IconToggleButton(
         checked = isPinned, onCheckedChange = onPinnedChange
     ) {
@@ -118,7 +144,9 @@ fun DefaultActions(
             painter = painterResource(
                 if (isPinned) R.drawable.outline_keep_off_24
                 else R.drawable.outline_keep_24
-            ), contentDescription = "Pin note", tint = foregroundColor
+            ),
+            contentDescription = "Pin note",
+            tint = foregroundColor
         )
     }
     IconButton(onClick = onShowThemeChange) {
